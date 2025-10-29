@@ -21,6 +21,8 @@ class Routing {
     ];
 
     // TODO bez switch case
+    // TODO dashboard/....
+    // TODO singleton aby nie tworzyc nowych kontrolerow
 
     public static function run(string $path) {
         switch($path){
