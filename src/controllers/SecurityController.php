@@ -11,31 +11,28 @@ class SecurityController extends AppController {
         $this->userRepository = new UserRepository();
     }
 
-    public function login(){
-        if (!$this->isPost()){
+    public function login() {
+        if (!$this->isPost()) {
             return $this->render("login");
         }
-        
-        $email = $_POST('email') ?? '';
-        $password = $_POST('password') ?? '';
 
-        if ($email == '' || $password == ''){
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
+
+        if ($email == '' || $password == '') {
             return $this->render('login', ['messages' => 'Fill the form']);
         }
 
-        //$userRepository = new UserRepository();
-        //$user = $userRepository->getUserByEmail($email);
-        $user = $this->$userRepository->getUserByEmail($email);
+        $user = $this->userRepository->getUserByEmail($email);
 
-        if (!$user){
+        if (!$user) {
             return $this->render('login', ['messages' => 'User does not exist']);
         }
 
-        if (!password_verify($password, $user('password'))){
+        if (!password_verify($password, $user['password'])) {
             return $this->render('login', ['messages' => 'Wrong password']);
         }
 
-        //TODO
         return $this->render('dashboard');
     }
 
@@ -44,14 +41,13 @@ class SecurityController extends AppController {
             return $this->render("register");
         }
 
-        var_dump($POST);
-        $email = $_POST('email') ?? '';
-        $password = $_POST('password1') ?? '';
-        $password2 = $_POST('password2') ?? '';
-        $firstname = $_POST('firstname') ?? '';
-        $lastname = $_POST('lastname') ?? '';
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password1'] ?? '';
+        $password2 = $_POST['password2'] ?? '';
+        $firstname = $_POST['firstname'] ?? '';
+        $lastname = $_POST['lastname'] ?? '';
 
-        if (empty($email) || empty($password) || empty($firstName)) {
+        if (empty($email) || empty($password) || empty($firstname)) {
             return $this->render('register', ['messages' => 'Fill all fields']);
         }
 
@@ -67,7 +63,7 @@ class SecurityController extends AppController {
             $hashedPassword,
             $firstname,
             $lastname
-        )
+        );
 
         return $this->render('login', ['messages' => 'Registration completed, please login']);
     }

@@ -3,16 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="public/styles/main.css">
     <link rel="stylesheet" type="text/css" href="public/styles/login.css">
     <title>LOGIN</title>
 </head>
 <body>
-    <form>
-        <h1>LOGIN</h1>
-        <input type="email" placeholder="Twoj email">
-        <input type="password" placeholder="Twoj password">
-        <button type="submit">LOGIN</button>
-    </form>
+    <div class="container">
+        <div class="logo">
+            <img src="public/img/logo.svg" alt="Logo" onerror="this.style.display='none'"> 
+        </div>
+        <form class="login-container" action="login" method="POST">
+            <h1>LOGIN</h1>
+            
+            <div class="messages">
+                <?php
+                    if(isset($messages)){
+                        echo $messages;
+                    }
+                ?>
+            </div>
+
+            <input name="email" type="email" placeholder="email@email.com">
+            <input name="password" type="password" placeholder="password">
+            <button type="submit">LOGIN</button>
+            
+            <a href="register" class="switch-form">No account? Register here</a>
+        </form>
+    </div>
 </body>
 </html>

@@ -17,6 +17,10 @@ class Routing {
         'dashboard' => [
             'controller' => "DashboardController",
             'action' => 'index'
+        ],
+        'search-cards' => [
+            'controller' => "DashboardController",
+            'action' => 'search'
         ]
     ];
 
@@ -25,15 +29,10 @@ class Routing {
     // TODO singleton aby nie tworzyc nowych kontrolerow
 
     public static function run(string $path) {
-        switch($path){
-            case 'dashboard':
-            case 'login':
+        if (array_key_exists($path, self::$routes)){
                 $controller = new Routing::$routes[$path]['controller'];
                 $action = Routing::$routes[$path]['action'];
                 $controller->$action();
-                break;
-            default:
-                include 'public/views/404.html';
-        }
+        } else include 'public/views/404.html';
     }
 }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="public/styles/login.css">
+    <title>REGISTER</title>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+             <img src="public/img/logo.svg" alt="Logo" onerror="this.style.display='none'">
+        </div>
+        <form class="login-container" action="register" method="POST">
+            <h1>REGISTER</h1>
+
+            <div class="messages">
+                <?php
+                    if(isset($messages)){
+                        echo $messages;
+                    }
+                ?>
+            </div>
+
+            <input name="firstname" type="text" placeholder="First Name">
+            <input name="lastname" type="text" placeholder="Last Name">
+            <input name="email" type="text" placeholder="email@email.com">
+            <input name="password1" type="password" placeholder="Password">
+            <input name="password2" type="password" placeholder="Confirm Password">
+            
+            <button type="submit">REGISTER</button>
+            
+            <a href="login" class="switch-form">Already have an account? Login</a>
+        </form>
+    </div>
+</body>
+</html>

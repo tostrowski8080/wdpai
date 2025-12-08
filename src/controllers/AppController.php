@@ -22,4 +22,8 @@ class AppController {
         echo $output;
     }
 
+    protected function isPost(): bool {
+        return $_SERVER['REQUEST_METHOD'] === 'POST';
+    }
+
 }
