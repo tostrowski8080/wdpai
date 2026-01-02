@@ -21,7 +21,7 @@
                     }
                 ?>
             </div>
-
+            <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
             <input name="email" type="email" placeholder="email@email.com">
             <input name="password" type="password" placeholder="password">
             <button type="submit">LOGIN</button>
