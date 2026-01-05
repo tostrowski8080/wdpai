@@ -2,6 +2,7 @@
 
 require_once "src/controllers/SecurityController.php";
 require_once "src/controllers/DashboardController.php";
+require_once 'src/middleware/checkRequestAllowed.php';
 
 class Routing {
 
@@ -32,6 +33,10 @@ class Routing {
         if (array_key_exists($path, self::$routes)){
                 $controller = new Routing::$routes[$path]['controller'];
                 $action = Routing::$routes[$path]['action'];
+
+                $controllerObj = new $controller;
+                checkRequestAllowed($controllerObj, $action);
+                
                 $controller->$action();
         } else include 'public/views/404.html';
     }

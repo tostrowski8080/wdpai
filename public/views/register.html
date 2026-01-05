@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<script src="public/scripts/validation.js" defer></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,11 +23,11 @@
                 ?>
             </div>
             <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
-            <input name="firstname" type="text" placeholder="First Name">
-            <input name="lastname" type="text" placeholder="Last Name">
-            <input name="email" type="text" placeholder="email@email.com">
-            <input name="password1" type="password" placeholder="Password">
-            <input name="password2" type="password" placeholder="Confirm Password">
+            <input name="firstname" type="text" placeholder="First Name"> <span class="error-text"></span>
+            <input name="lastname" type="text" placeholder="Last Name"> <span class="error-text"></span>
+            <input name="email" type="text" placeholder="email@email.com"> <span class="error-text"></span>
+            <input name="password1" type="password" placeholder="Password"> <span class="error-text"></span>
+            <input name="password2" type="password" placeholder="Confirm Password"> <span class="error-text"></span>
             
             <button type="submit">REGISTER</button>
             

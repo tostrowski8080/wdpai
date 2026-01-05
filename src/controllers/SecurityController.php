@@ -2,6 +2,7 @@
 
 require_once "AppController.php";
 require_once __DIR__.'/../repository/UserRepository.php';
+require_once __DIR__ . '/../attribute/AllowedMethods.php';
 
 class SecurityController extends AppController {
 
@@ -11,6 +12,7 @@ class SecurityController extends AppController {
         $this->userRepository = new UserRepository();
     }
 
+    #[AllowedMethods(['POST', 'GET'])]
     public function login() {
         if (!$this->isPost()) {
             return $this->render("login");
@@ -36,6 +38,7 @@ class SecurityController extends AppController {
         return $this->render('dashboard');
     }
 
+    #[AllowedMethods(['POST', 'GET'])]
     public function register(){  
         if (!$this->isPost()){
             return $this->render("register");
@@ -63,17 +66,25 @@ class SecurityController extends AppController {
             return $this->render('register', ['messages' => 'Invalid email format']);
         }
 
+        if (strlen($firstname) < 2 || !preg_match('/^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ \-]+$/', $firstname)){
+            return $this->render('register', ['messages' => 'Invalid first name input.']);
+        }
+
+        if (strlen($lastname) < 2 || !preg_match('/^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ \-]+$/', $lastname)){
+            return $this->render('register', ['messages' => 'Invalid last name input.']);
+        }
+
         $existingUser = $this->userRepository->getUserByEmail($email);
         if ($existingUser) {
             return $this->render('register', ['messages' => 'Email already in use']);
         }
 
-        if ($password !== $password2){
-            return $this->render('register', ['messages' => 'Passwords must be the same']);
-        }
-
         if (strlen($password) < 8 || !preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/', $password)){
             return $this->render('register', ['messages' => 'Password must be 8+ characters, with at least one uppercase, lowercase, number, and special character.']);
+        }
+
+        if ($password !== $password2){
+            return $this->render('register', ['messages' => 'Passwords must be the same']);
         }
 
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);

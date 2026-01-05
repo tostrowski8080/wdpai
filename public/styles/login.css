@@ -97,3 +97,24 @@ button:hover {
     height: 80px;
     margin-bottom: 20px;
 }
+
+.error-text {
+    font-size: 0.8rem;
+    color: #d93025;
+    display: none;
+    text-align: left;
+    width: 100%;
+    margin-top: -1rem;
+    margin-bottom: -0.5rem;
+    padding-left: 5px;
+    line-height: 1.2;
+}
+
+input.no-valid + .error-text {
+    display: block;
+}
+
+input.no-valid {
+    border: 2px solid red;
+    background-color: #ffe5e5;
+}
