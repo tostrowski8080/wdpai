@@ -1,57 +1,95 @@
-h1 {color: blue;}
+:root {
+    --bg-body: #f5f7fa;
+    --bg-white: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --border-light: #e5e7eb;
+    --sidebar-width: 260px;
+    --primary-color: #3b82f6;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 body {
-    margin: 0;
-    height: 100vh;
-    
-    display: flex;
-    flex-direction: column;
-
-}
-
-nav {
-    background-color: bisque;
-
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
-}
-
-nav > ul {
-    display: flex;
-    gap: 2rem;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr;
 }
 
 aside {
-    background-color: rosybrown;
+    background-color: var(--bg-white);
+    border-right: 1px solid var(--border-light);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+aside .logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2.5rem;
+    padding-left: 0.5rem;
+}
+
+aside nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+aside nav li a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-secondary);
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+aside nav li a:hover,
+aside nav li a.active {
+    background-color: #eff6ff;
+    color: var(--primary-color);
+}
+
+aside nav li a .material-icons-round {
+    font-size: 1.25rem;
 }
 
 main {
-    background-color: aqua;
+    padding: 2.5rem;
+    overflow-y: auto;
 }
 
-.container {
-    background-color:aquamarine;
-
-    display: grid;
-    grid-template-columns: 20% 80%;
-
-    height: calc(100vh - 5rem);
-}
-
-@media screen and (max-width:480px) {
-    .container {
+@media screen and (max-width: 768px) {
+    body {
         grid-template-columns: 1fr;
     }
     
     aside {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 5rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid var(--border-light);
+        padding: 1rem;
     }
+
+    aside .logo { margin-bottom: 1rem; }
+    
+    main { padding: 1rem; }
 }

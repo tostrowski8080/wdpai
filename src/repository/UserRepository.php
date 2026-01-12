@@ -45,10 +45,10 @@ class UserRepository extends Repository
         return $user;
     }
 
-    public function createUser(string $email, string $hashedPassword, string $firstname, string $lastname, string $bio = '') 
+    public function createUser(string $email, string $hashedPassword, string $firstname, string $lastname) 
     {
         $stmt = $this->database->connect()->prepare('
-            INSERT INTO users (email, password, firstname, lastname, bio) VALUES (?, ?, ?, ?, ?)
+            INSERT INTO users (email, password, firstname, lastname) VALUES (?, ?, ?, ?)
         ');
 
         $stmt->execute([
@@ -56,7 +56,6 @@ class UserRepository extends Repository
             $hashedPassword, 
             $firstname, 
             $lastname, 
-            $bio
         ]);
     }
 }

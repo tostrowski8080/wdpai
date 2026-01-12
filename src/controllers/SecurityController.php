@@ -14,6 +14,16 @@ class SecurityController extends AppController {
 
     #[AllowedMethods(['POST', 'GET'])]
     public function login() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (isset($_SESSION['user_id'])) {
+            $url = "http://$_SERVER[HTTP_HOST]";
+            header("Location: {$url}/dashboard");
+            exit();
+        }
+
         if (!$this->isPost()) {
             return $this->render("login");
         }
@@ -33,9 +43,12 @@ class SecurityController extends AppController {
 
         session_regenerate_id(true);
         
-        $_SESSION['user_id'] = $user['id']; 
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_email'] = $user['email'];
         
-        return $this->render('dashboard');
+        $url = "http://$_SERVER[HTTP_HOST]";
+        header("Location: {$url}/dashboard");
+        exit();
     }
 
     #[AllowedMethods(['POST', 'GET'])]
@@ -49,43 +62,6 @@ class SecurityController extends AppController {
         $password2 = $_POST['password2'] ?? '';
         $firstname = trim($_POST['firstname'] ?? '');
         $lastname = trim($_POST['lastname'] ?? '');
-
-        if (empty($email) || empty($password) || empty($firstname) || empty($lastname)) {
-            return $this->render('register', ['messages' => 'Fill all fields']);
-        }
-
-        if (strlen($email) > 254 || 
-            strlen($password) > 128 || 
-            strlen($password2) > 128 ||
-            strlen($firstname) > 100 || 
-            strlen($lastname) > 100) {
-            return $this->render('register', ['messages' => 'Invalid input length']);
-        }
-
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return $this->render('register', ['messages' => 'Invalid email format']);
-        }
-
-        if (strlen($firstname) < 2 || !preg_match('/^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ \-]+$/', $firstname)){
-            return $this->render('register', ['messages' => 'Invalid first name input.']);
-        }
-
-        if (strlen($lastname) < 2 || !preg_match('/^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ \-]+$/', $lastname)){
-            return $this->render('register', ['messages' => 'Invalid last name input.']);
-        }
-
-        $existingUser = $this->userRepository->getUserByEmail($email);
-        if ($existingUser) {
-            return $this->render('register', ['messages' => 'Email already in use']);
-        }
-
-        if (strlen($password) < 8 || !preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/', $password)){
-            return $this->render('register', ['messages' => 'Password must be 8+ characters, with at least one uppercase, lowercase, number, and special character.']);
-        }
-
-        if ($password !== $password2){
-            return $this->render('register', ['messages' => 'Passwords must be the same']);
-        }
 
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
         

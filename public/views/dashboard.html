@@ -3,33 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="public/styles/main.css">
-    <script src="public/scripts/main.js" defer></script>
-    <title>DASHBOARD</title>
+    <title>Activity Helper Dashboard</title>
+    <link rel="stylesheet" href="public/styles/main.css">
+    <link rel="stylesheet" href="public/styles/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body>
-    <h1>DASHBOARD</h1>
 
+    <aside>
+        <div class="logo">Activity Helper</div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active"><span class="material-icons-round">grid_view</span> Dashboard</a></li>
+                <li><a href="#"><span class="material-icons-round">calendar_today</span> Calendar</a></li>
+                <li><a href="#"><span class="material-icons-round">add</span> Add New</a></li>
+                <li><a href="#"><span class="material-icons-round">bar_chart</span> Statistics</a></li>
+                <li><a href="#"><span class="material-icons-round">person</span> Profile</a></li>
+            </ul>
+        </nav>
+    </aside>
 
-<nav>
-    <p>
-        LOGO
-    </p>
-    <ul>
-        <li>DASHBOARD</li>
-        <li>USERS</li>
-        <li>REPORTS</li>
-    </ul>
-    <div class = "container">
-            <aside>
-                <p>MOJ TOOLBAR</p>
-            </aside>
-            <main>
-                <h1>DASHBOARD</h1>
-                
-            </main>
-    </div>
-</nav>
+    <main>
+        <header>
+            <h1>Dashboard</h1>
+            <p id="current-date">Monday, January 12, 2026</p>
+        </header>
+
+        <section class="stats-grid">
+            <div class="card">
+                <div class="stat-header">
+                    <span>Today's Activities</span>
+                    <span class="material-icons-round">calendar_month</span>
+                </div>
+                <div class="stat-value" id="stat-scheduled">0</div>
+                <div class="stat-sub">scheduled</div>
+            </div>
+
+            <div class="card">
+                <div class="stat-header">
+                    <span>This Week</span>
+                    <span class="material-icons-round">schedule</span>
+                </div>
+                <div class="stat-value" id="stat-hours">0</div>
+                <div class="stat-sub">hours total</div>
+            </div>
+
+            <div class="card">
+                <div class="stat-header">
+                    <span>Productivity</span>
+                    <span class="material-icons-round">trending_up</span>
+                </div>
+                <div class="stat-value" id="stat-productivity">0%</div>
+                <div class="progress-bg">
+                    <div class="progress-fill" style="width: 0%" id="stat-prog-bar"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="stat-header">
+                    <span>Completed</span>
+                    <span class="material-icons-round">check_circle</span>
+                </div>
+                <div class="stat-value" id="stat-completed">0 / 0</div>
+            </div>
+        </section>
+
+        <section class="lists-grid">
+            
+            <div class="list-column">
+                <h3 class="section-title">Today's Schedule</h3>
+                <span class="section-subtitle">Your activities for today</span>
+
+                <div id="today-schedule-container">
+                    
+                    <p style="color:#999; font-size:0.9rem;">Loading today's schedule...</p>
+
+                </div>
+            </div>
+
+            <div class="list-column">
+                <h3 class="section-title">Upcoming Activities</h3>
+                <span class="section-subtitle">What's next on your schedule</span>
+
+                <div id="upcoming-schedule-container">
+                    
+                    <p style="color:#999; font-size:0.9rem;">Loading upcoming events...</p>
+
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h3 class="section-title">Weekly Overview</h3>
+            <span class="section-subtitle">Activities for this week</span>
+
+            <div class="weekly-grid" id="weekly-calendar-container">
+                <div class="day-column">
+                    <span class="day-header">Sun</span>
+                    <span class="day-number">11</span>
+                </div>
+
+                <div class="day-column active">
+                    <span class="day-header">Mon</span>
+                    <span class="day-number">12</span>
+                    <div class="mini-event bg-health">Workout</div>
+                    <div class="mini-event bg-work">Meeting</div>
+                </div>
+
+                <div class="day-column"><span class="day-header">Tue</span><span class="day-number">13</span></div>
+                <div class="day-column"><span class="day-header">Wed</span><span class="day-number">14</span></div>
+                <div class="day-column"><span class="day-header">Thu</span><span class="day-number">15</span></div>
+                <div class="day-column"><span class="day-header">Fri</span><span class="day-number">16</span></div>
+                <div class="day-column"><span class="day-header">Sat</span><span class="day-number">17</span></div>
+
+            </div>
+        </section>
+
+    </main>
 
 </body>
 </html>

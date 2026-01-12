@@ -5,6 +5,7 @@ require_once "src/controllers/DashboardController.php";
 require_once 'src/middleware/checkRequestAllowed.php';
 
 class Routing {
+    private static $instances = [];
 
     public static $routes = [
         'login' => [
@@ -19,25 +20,31 @@ class Routing {
             'controller' => "DashboardController",
             'action' => 'index'
         ],
-        'search-cards' => [
-            'controller' => "DashboardController",
-            'action' => 'search'
-        ]
     ];
 
-    // TODO bez switch case
-    // TODO dashboard/....
-    // TODO singleton aby nie tworzyc nowych kontrolerow
-
     public static function run(string $path) {
-        if (array_key_exists($path, self::$routes)){
-                $controller = new Routing::$routes[$path]['controller'];
-                $action = Routing::$routes[$path]['action'];
+        $urlParts = explode("/", $path);
+        
+        $actionKey = $urlParts[0];
 
-                $controllerObj = new $controller;
-                checkRequestAllowed($controllerObj, $action);
-                
-                $controller->$action();
-        } else include 'public/views/404.html';
+        if (!array_key_exists($actionKey, self::$routes)) {
+            include 'public/views/404.html';
+            return;
+        }
+
+        $controllerName = self::$routes[$actionKey]['controller'];
+        $methodName = self::$routes[$actionKey]['action'];
+
+        if (!isset(self::$instances[$controllerName])) {
+            self::$instances[$controllerName] = new $controllerName();
+        }
+        
+        $object = self::$instances[$controllerName];
+
+        checkRequestAllowed($object, $methodName);
+
+        $id = $urlParts[1] ?? null;
+
+        $object->$methodName($id);
     }
 }
