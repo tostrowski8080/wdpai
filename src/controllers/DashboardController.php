@@ -2,6 +2,7 @@
 
 require_once "AppController.php";
 require_once __DIR__.'/../repository/UserRepository.php';
+require_once __DIR__.'/../repository/ActivityRepository.php';
 
 class DashboardController extends AppController {
     
@@ -21,10 +22,12 @@ class DashboardController extends AppController {
 
         $userId = $_SESSION['user_id'];
 
-        //TODO fetch stuff from db
+        $activityRepository = new ActivityRepository();
+        
+        $activities = $activityRepository->getActivitiesByUser($userId);
 
         return $this->render('dashboard', [
-            'user_name' => $_SESSION['user_name'], 
+            'user_name' => $_SESSION['user_id'], 
             'activities' => $activities
         ]);
     }
