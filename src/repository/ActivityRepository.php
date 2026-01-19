@@ -42,4 +42,22 @@ class ActivityRepository extends Repository {
 
         return $activities;
     }
+
+        public function getThisWeekActivitiesByUser(int $user_id)
+    {
+        $stmt = $this->database->connect()->prepare('
+            SELECT a.*, c.name as category_name 
+            FROM activities a
+            LEFT JOIN categories c ON a.category_id = c.id
+            WHERE a.user_id = :user_id
+            ORDER BY a.start_time ASC
+        ');
+    
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $activities;
+    }
 }

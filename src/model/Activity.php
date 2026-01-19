@@ -5,13 +5,11 @@ class Activity {
     private $userId;
     private $categoryId;
     private $title;
-    private $description;
     private $startTime;
     private $endTime;
     private $isCompleted;
     private $isRecurring;
     private $recurrencePattern;
-    private $parentActivityId;
 
     public function __construct(
         string $title,
@@ -63,16 +61,6 @@ class Activity {
         $this->title = $title;
     }
 
-    public function getDescription(): ?string 
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): void 
-    {
-        $this->description = $description;
-    }
-
     public function getStartTime(): string 
     {
         return $this->startTime;
@@ -121,15 +109,5 @@ class Activity {
     public function setRecurrencePattern(?string $pattern): void
     {
         $this->recurrencePattern = $pattern;
-    }
-
-    public function getParentActivityId(): ?int
-    {
-        return $this->parentActivityId;
-    }
-
-    public function setParentActivityId(?int $id): void
-    {
-        $this->parentActivityId = $id;
     }
 }

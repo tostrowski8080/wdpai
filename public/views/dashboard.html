@@ -27,16 +27,19 @@
     <main>
         <header>
             <h1>Dashboard</h1>
-            <p id="current-date">Monday, January 12, 2026</p>
+            <p id="current-date"><?= date('l, F j, Y') ?></p>
         </header>
 
         <section class="stats-grid">
+            
             <div class="card">
                 <div class="stat-header">
                     <span>Today's Activities</span>
                     <span class="material-icons-round">calendar_month</span>
                 </div>
-                <div class="stat-value" id="stat-scheduled">0</div>
+                <div class="stat-value" id="stat-scheduled">
+                    <?= count($today_activities) ?>
+                </div>
                 <div class="stat-sub">scheduled</div>
             </div>
 
@@ -45,7 +48,9 @@
                     <span>This Week</span>
                     <span class="material-icons-round">schedule</span>
                 </div>
-                <div class="stat-value" id="stat-hours">0</div>
+                <div class="stat-value" id="stat-hours">
+                    <?= number_format($stats['hours_this_week'], 1) ?>
+                </div>
                 <div class="stat-sub">hours total</div>
             </div>
 
@@ -54,10 +59,6 @@
                     <span>Productivity</span>
                     <span class="material-icons-round">trending_up</span>
                 </div>
-                <div class="stat-value" id="stat-productivity">0%</div>
-                <div class="progress-bg">
-                    <div class="progress-fill" style="width: 0%" id="stat-prog-bar"></div>
-                </div>
             </div>
 
             <div class="card">
@@ -65,7 +66,9 @@
                     <span>Completed</span>
                     <span class="material-icons-round">check_circle</span>
                 </div>
-                <div class="stat-value" id="stat-completed">0 / 0</div>
+                <div class="stat-value" id="stat-completed">
+                    <?= $stats['completed_count'] ?> / <?= $stats['total_count'] ?>
+                </div>
             </div>
         </section>
 
@@ -76,9 +79,27 @@
                 <span class="section-subtitle">Your activities for today</span>
 
                 <div id="today-schedule-container">
-                    
-                    <p style="color:#999; font-size:0.9rem;">Loading today's schedule...</p>
-
+                    <?php if (empty($today_activities)): ?>
+                        <p style="color:#9ca3af; font-size:0.9rem; padding:10px;">No activities scheduled for today.</p>
+                    <?php else: ?>
+                        <?php foreach ($today_activities as $item): ?>
+                            <div class="activity-card">
+                                <div class="act-info">
+                                    <div class="dot <?= strtolower($item['category_name'] ?? 'default') ?>"></div>
+                                    <div>
+                                        <h4><?= htmlspecialchars($item['title']) ?></h4>
+                                        <span class="time">
+                                            <?= date('H:i', strtotime($item['start_time'])) ?> - 
+                                            <?= date('H:i', strtotime($item['end_time'])) ?>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="tag <?= strtolower($item['category_name'] ?? 'default') ?>">
+                                    <?= htmlspecialchars($item['category_name'] ?? 'General') ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -87,9 +108,27 @@
                 <span class="section-subtitle">What's next on your schedule</span>
 
                 <div id="upcoming-schedule-container">
-                    
-                    <p style="color:#999; font-size:0.9rem;">Loading upcoming events...</p>
-
+                    <?php 
+                    if (empty($upcoming_activities)): ?>
+                         <p style="color:#9ca3af; font-size:0.9rem; padding:10px;">No upcoming activities found.</p>
+                    <?php else: ?>
+                        <?php foreach ($upcoming_activities as $item): ?>
+                            <div class="activity-card">
+                                <div class="act-info">
+                                    <div class="dot <?= strtolower($item['category_name'] ?? 'default') ?>"></div>
+                                    <div>
+                                        <h4><?= htmlspecialchars($item['title']) ?></h4>
+                                        <span class="time">
+                                            <?= date('M d • H:i', strtotime($item['start_time'])) ?>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="tag <?= strtolower($item['category_name'] ?? 'default') ?>">
+                                    <?= htmlspecialchars($item['category_name'] ?? 'General') ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </section>
@@ -99,24 +138,28 @@
             <span class="section-subtitle">Activities for this week</span>
 
             <div class="weekly-grid" id="weekly-calendar-container">
-                <div class="day-column">
-                    <span class="day-header">Sun</span>
-                    <span class="day-number">11</span>
-                </div>
+                <?php 
+                    $weekStart = strtotime('last sunday', strtotime('tomorrow')); 
+                ?>
 
-                <div class="day-column active">
-                    <span class="day-header">Mon</span>
-                    <span class="day-number">12</span>
-                    <div class="mini-event bg-health">Workout</div>
-                    <div class="mini-event bg-work">Meeting</div>
-                </div>
+                <?php foreach (['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as $dayName): ?>
+                    <?php 
+                        $isToday = ($dayName === date('l')); 
+                        $eventsForDay = $week_grid[$dayName] ?? [];
+                    ?>
 
-                <div class="day-column"><span class="day-header">Tue</span><span class="day-number">13</span></div>
-                <div class="day-column"><span class="day-header">Wed</span><span class="day-number">14</span></div>
-                <div class="day-column"><span class="day-header">Thu</span><span class="day-number">15</span></div>
-                <div class="day-column"><span class="day-header">Fri</span><span class="day-number">16</span></div>
-                <div class="day-column"><span class="day-header">Sat</span><span class="day-number">17</span></div>
-
+                    <div class="day-column <?= $isToday ? 'active' : '' ?>">
+                        <span class="day-header"><?= substr($dayName, 0, 3) ?></span> <span class="day-number"><?= date('j', $weekStart) ?></span>   <div class="mini-events">
+                            <?php foreach ($eventsForDay as $event): ?>
+                                <div class="mini-event bg-<?= strtolower($event['category_name'] ?? 'default') ?>">
+                                    <?= htmlspecialchars($event['title']) ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    
+                    <?php $weekStart = strtotime('+1 day', $weekStart); ?>
+                <?php endforeach; ?>
             </div>
         </section>
 

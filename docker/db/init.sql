@@ -12,9 +12,7 @@ CREATE TABLE categories (
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     name VARCHAR(50) NOT NULL,
     color_hex VARCHAR(7) NOT NULL DEFAULT '#3b82f6',
-    icon_name VARCHAR(50),
-    is_productive BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    icon_name VARCHAR(50)
 );
 
 CREATE INDEX idx_categories_user ON categories(user_id);
@@ -25,7 +23,6 @@ CREATE TABLE activities (
     category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL,
     
     title VARCHAR(255) NOT NULL,
-    description TEXT,
     
     start_time TIMESTAMP WITH TIME ZONE NOT NULL,
     end_time TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -34,7 +31,6 @@ CREATE TABLE activities (
     
     is_recurring BOOLEAN DEFAULT FALSE,
     recurrence_pattern VARCHAR(100),
-    parent_activity_id INTEGER REFERENCES activities(id) ON DELETE CASCADE,
     
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
