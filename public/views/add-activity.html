@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Activity - Activity Helper</title>
+    <link rel="stylesheet" href="public/styles/main.css">
+    <link rel="stylesheet" href="public/styles/add.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+<body>
+    <aside>
+        <div class="logo">Activity Helper</div>
+        <nav>
+            <ul>
+                <li><a href="dashboard"><span class="material-icons-round">grid_view</span> Dashboard</a></li>
+                <li><a href="#"><span class="material-icons-round">calendar_today</span> Calendar</a></li>
+                <li><a href="#" class="active"><span class="material-icons-round">add</span> Add New</a></li>
+                <li><a href="#"><span class="material-icons-round">bar_chart</span> Statistics</a></li>
+                <li><a href="#"><span class="material-icons-round">person</span> Profile</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <header>
+            <h1>Add Activity</h1>
+            <p>Create a new activity for your schedule</p>
+        </header>
+
+        <section class="form-container">
+            <form action="add-activity" method="POST">
+                
+                <div class="form-header">
+                    <h3>Activity Details</h3>
+                    <p>Fill in the information about your activity</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="activity-name">Activity Name</label>
+                    <input type="text" id="activity-name" name="activity_name" 
+                           placeholder="e.g., Team Meeting, Workout Session"
+                           value="<?= isset($activity['title']) ? htmlspecialchars($activity['title']) : '' ?>">
+                </div>
+
+                <div class="form-group">
+                    <label>Activity Category</label>
+                    
+                    <input type="hidden" name="category_id" id="category_id_input" 
+                           value="<?= isset($activity['category_id']) ? $activity['category_id'] : '' ?>">
+
+                    <div class="custom-select-container" id="custom-category-dropdown">
+                        
+                        <div class="custom-select-trigger" id="custom-select-trigger">
+                            <span class="placeholder">Select a category...</span>
+                            <span class="material-icons-round arrow">expand_more</span>
+                        </div>
+
+                        <div class="custom-options">
+                            <?php if (!empty($categories)): ?>
+                                <?php foreach ($categories as $cat): ?>
+                                    <?php 
+                                        $isDefault = in_array($cat['name'], ['Work', 'Health', 'Personal', 'Education']);
+                                        $textColor = $cat['color_hex']; 
+                                    ?>
+                                    
+                                    <div class="custom-option" 
+                                         data-value="<?= $cat['id'] ?>" 
+                                         data-color="<?= $textColor ?>">
+                                        
+                                        <div class="option-content" style="color: <?= $textColor ?>;">
+                                            <?php if ($isDefault): ?>
+                                                <span class="dot" style="background-color: <?= $textColor ?>;"></span>
+                                            <?php else: ?>
+                                                <?php if(!empty($cat['icon_name'])): ?>
+                                                    <span class="icon-char"><?= $cat['icon_name'] ?></span> 
+                                                <?php else: ?>
+                                                    <span class="dot" style="background-color: <?= $textColor ?>;"></span>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+
+                                            <span class="cat-name"><?= htmlspecialchars($cat['name']) ?></span>
+                                        </div>
+                                    </div>
+
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="custom-option disabled">No categories found</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration">Duration (minutes)</label>
+                    <input type="number" id="duration" name="duration" 
+                           value="<?= isset($activity['duration']) ? $activity['duration'] : '45' ?>">
+                </div>
+
+                <div class="form-group-toggle">
+                    <div class="toggle-text">
+                        <label for="recurring">Recurring Activity</label>
+                        <span>This activity repeats on a schedule</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="recurring" name="recurring"
+                               <?= (isset($activity['is_recurring']) && $activity['is_recurring']) ? 'checked' : '' ?>>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div class="form-group hidden" id="recurrence-options">
+                    <label for="recurrence-pattern">Recurrence Pattern</label>
+                    <div class="select-wrapper">
+                        <select id="recurrence-pattern" name="recurrence_pattern">
+                            <option value="daily" <?= (isset($activity['recurrence_pattern']) && $activity['recurrence_pattern'] == 'daily') ? 'selected' : '' ?>>Daily</option>
+                            <option value="weekly" <?= (isset($activity['recurrence_pattern']) && $activity['recurrence_pattern'] == 'weekly') ? 'selected' : '' ?>>Weekly</option>
+                            <option value="bi-weekly" <?= (isset($activity['recurrence_pattern']) && $activity['recurrence_pattern'] == 'bi-weekly') ? 'selected' : '' ?>>Bi-weekly</option>
+                            <option value="monthly" <?= (isset($activity['recurrence_pattern']) && $activity['recurrence_pattern'] == 'monthly') ? 'selected' : '' ?>>Monthly</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group-toggle">
+                    <div class="toggle-text">
+                        <label for="deadline-toggle">Use Deadline Instead</label>
+                        <span>Set a deadline and let AI suggest the best time</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="deadline-toggle" name="use_deadline">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div id="manual-scheduling">
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <div class="input-with-icon">
+                            <span class="material-icons-round">calendar_today</span>
+                            <input type="date" id="date" name="date" 
+                                   value="<?= isset($activity['start_time']) ? date('Y-m-d', strtotime($activity['start_time'])) : date('Y-m-d') ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="start-time">Start Time</label>
+                            <input type="time" id="start-time" name="start_time" 
+                                   value="<?= isset($activity['start_time']) ? date('H:i', strtotime($activity['start_time'])) : '09:00' ?>">
+                        </div>
+                        <div class="form-group half">
+                            <label for="end-time">End Time</label>
+                            <input type="time" id="end-time" name="end_time" 
+                                   value="<?= isset($activity['end_time']) ? date('H:i', strtotime($activity['end_time'])) : '10:00' ?>">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="deadline-scheduling" class="hidden">
+                    <div class="form-group">
+                        <label for="deadline-date">Deadline</label>
+                        <div class="input-with-icon">
+                            <span class="material-icons-round">event_available</span>
+                            <input type="date" id="deadline-date" name="deadline_date" value="<?= date('Y-m-d', strtotime('+1 day')) ?>">
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn-outline">
+                        <span class="material-icons-round">auto_awesome</span>
+                        Suggest Optimal Time
+                    </button>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span class="material-icons-round">check</span>
+                    Add Activity
+                </button>
+
+            </form>
+        </section>
+
+    </main>
+
+    <script src="public/scripts/add-activity.js"></script>
+</body>
+</html>

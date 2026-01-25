@@ -7,9 +7,11 @@ require_once __DIR__ . '/../attribute/AllowedMethods.php';
 class SecurityController extends AppController {
 
     private $userRepository;
+    private $activityRepository;
 
     public function __construct(){
         $this->userRepository = new UserRepository();
+        $this->activityRepository = new ActivityRepository();
     }
 
     #[AllowedMethods(['POST', 'GET'])]
@@ -45,6 +47,8 @@ class SecurityController extends AppController {
         
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_email'] = $user['email'];
+
+        $this->activityRepository->checkAndCompleteExpiredActivities($user['id']);
         
         $url = "http://$_SERVER[HTTP_HOST]";
         header("Location: {$url}/dashboard");

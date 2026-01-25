@@ -37,7 +37,9 @@ class DashboardController extends AppController {
         $stats = [
             'hours_this_week' => 0,
             'completed_count' => 0,
-            'total_count' => 0
+            'total_count' => 0,
+            'total_weekly_count' => 0,
+            'completed_weekly_count' => 0
         ];
 
         $currentDate = date('Y-m-d');
@@ -47,6 +49,11 @@ class DashboardController extends AppController {
             $end = strtotime($activity['end_time']);
             $dateString = date('Y-m-d', $start);
             $dayName = date('l', $start);
+            $stats['total_weekly_count']++;
+
+            if ($activity['is_completed']) {
+                $stats['completed_weekly_count']++;
+            }
 
             if ($dateString === $currentDate) {
                 $todayActivities[] = $activity;

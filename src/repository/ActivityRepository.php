@@ -34,7 +34,7 @@ class ActivityRepository extends Repository {
         $end_date = date('Y-m-d 23:59:59', $saturday);
 
         $stmt = $this->database->connect()->prepare('
-            SELECT a.*, c.name as category_name 
+            SELECT a.*, c.name as category_name, c.color_hex
             FROM activities a
             LEFT JOIN categories c ON a.category_id = c.id
             WHERE a.user_id = :user_id
@@ -54,6 +54,101 @@ class ActivityRepository extends Repository {
         $rawActivities = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $this->expandRecurringEvents($rawActivities, $start_date, $end_date);
+    }
+
+    public function getCategoriesByUserId(int $userId): array
+    {
+        $stmt = $this->database->connect()->prepare('
+            SELECT * FROM categories 
+            WHERE user_id = :user_id 
+            ORDER BY name ASC
+        ');
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getActivityById(int $id): ?array
+    {
+        $stmt = $this->database->connect()->prepare('
+            SELECT * FROM activities WHERE id = :id
+        ');
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $activity = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($activity == false) {
+            return null;
+        }
+
+        return $activity;
+    }
+
+public function addActivity(array $data): void
+    {
+        $stmt = $this->database->connect()->prepare('
+            INSERT INTO activities (
+                user_id, category_id, title, start_time, end_time, 
+                is_recurring, recurrence_pattern, is_completed
+            )
+            VALUES (
+                :user_id, :category_id, :title, :start_time, :end_time, 
+                :is_recurring, :recurrence_pattern, :is_completed
+            )
+        ');
+
+        $userId = $data['user_id'];
+        $categoryId = $data['category_id'];
+        $title = $data['title'];
+        $startTime = $data['start_time'];
+        $endTime = $data['end_time'];
+        $isRecurring = $data['is_recurring'] ? 1 : 0; 
+        $recurrencePattern = $data['recurrence_pattern'];
+        $isCompleted = 0;
+
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
+        $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+        $stmt->bindParam(':start_time', $startTime, PDO::PARAM_STR);
+        $stmt->bindParam(':end_time', $endTime, PDO::PARAM_STR);
+        $stmt->bindParam(':is_recurring', $isRecurring, PDO::PARAM_INT);
+        $stmt->bindParam(':recurrence_pattern', $recurrencePattern, PDO::PARAM_STR);
+        $stmt->bindParam(':is_completed', $isCompleted, PDO::PARAM_INT);
+
+        $stmt->execute();
+    }
+
+    public function updateActivity(int $id, array $data): void
+    {
+        $stmt = $this->database->connect()->prepare('
+            UPDATE activities 
+            SET title = :title, 
+                category_id = :category_id, 
+                start_time = :start_time, 
+                end_time = :end_time, 
+                is_recurring = :is_recurring, 
+                recurrence_pattern = :recurrence_pattern
+            WHERE id = :id
+        ');
+
+        $title = $data['title'];
+        $categoryId = $data['category_id'];
+        $startTime = $data['start_time'];
+        $endTime = $data['end_time'];
+        $isRecurring = $data['is_recurring'] ? 1 : 0;
+        $recurrencePattern = $data['recurrence_pattern'];
+
+        $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+        $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
+        $stmt->bindParam(':start_time', $startTime, PDO::PARAM_STR);
+        $stmt->bindParam(':end_time', $endTime, PDO::PARAM_STR);
+        $stmt->bindParam(':is_recurring', $isRecurring, PDO::PARAM_INT);
+        $stmt->bindParam(':recurrence_pattern', $recurrencePattern, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        $stmt->execute();
     }
 
     private function expandRecurringEvents(array $activities, string $weekStart, string $weekEnd): array
@@ -120,5 +215,19 @@ class ActivityRepository extends Repository {
         });
 
         return $processedActivities;
+    }
+
+    public function checkAndCompleteExpiredActivities(int $userId): void
+    {
+        $stmt = $this->database->connect()->prepare('
+            UPDATE activities 
+            SET is_completed = TRUE 
+            WHERE user_id = :user_id 
+            AND is_completed = FALSE 
+            AND end_time < CURRENT_TIMESTAMP
+        ');
+        
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
     }
 }

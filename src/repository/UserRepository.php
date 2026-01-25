@@ -45,17 +45,57 @@ class UserRepository extends Repository
         return $user;
     }
 
-    public function createUser(string $email, string $hashedPassword, string $firstname, string $lastname) 
+public function createUser(string $email, string $hashedPassword, string $firstname, string $lastname) 
     {
-        $stmt = $this->database->connect()->prepare('
-            INSERT INTO users (email, password, firstname, lastname) VALUES (?, ?, ?, ?)
-        ');
+        $pdo = $this->database->connect();
+        
+        try {
+            $pdo->beginTransaction();
 
-        $stmt->execute([
-            $email, 
-            $hashedPassword, 
-            $firstname, 
-            $lastname, 
-        ]);
+            $stmt = $pdo->prepare('
+                INSERT INTO users (email, password, firstname, lastname) 
+                VALUES (:email, :password, :firstname, :lastname)
+                RETURNING id
+            ');
+
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
+            $stmt->bindParam(':firstname', $firstname, PDO::PARAM_STR);
+            $stmt->bindParam(':lastname', $lastname, PDO::PARAM_STR);
+
+            $stmt->execute();
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $userId = $result['id'];
+
+            $defaultCategories = [
+                ['Work',      '#2196f3', ''],
+                ['Health',    '#00bcd4', ''],
+                ['Personal',  '#ff9800', ''],
+                ['Education', '#9c27b0', '']
+            ];
+
+            $catStmt = $pdo->prepare('
+                INSERT INTO categories (user_id, name, color_hex, icon_name) 
+                VALUES (?, ?, ?, ?)
+            ');
+
+            foreach ($defaultCategories as $cat) {
+                $catStmt->execute([
+                    $userId,
+                    $cat[0],
+                    $cat[1],
+                    $cat[2]
+                ]);
+            }
+
+            $pdo->commit();
+
+        } catch (Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            throw $e;
+        }
     }
 }

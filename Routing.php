@@ -2,6 +2,7 @@
 
 require_once "src/controllers/SecurityController.php";
 require_once "src/controllers/DashboardController.php";
+require_once "src/controllers/AddActivityController.php";
 require_once 'src/middleware/checkRequestAllowed.php';
 
 class Routing {
@@ -19,6 +20,14 @@ class Routing {
         'dashboard' => [
             'controller' => "DashboardController",
             'action' => 'index'
+        ],
+        'add-activity' => [
+            'controller' => "AddActivityController",
+            'action' => 'add'
+        ],
+        'modify-activity' => [
+            'controller' => "AddActivityController",
+            'action' => 'modify'
         ],
     ];
 
