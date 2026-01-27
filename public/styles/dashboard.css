@@ -37,40 +37,8 @@ header p { color: var(--text-secondary); font-size: 0.9rem; }
 .stat-value { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); }
 .stat-sub { font-size: 0.8rem; color: #9ca3af; margin-top: 0.25rem; }
 
-.progress-bg { background: #f3f4f6; height: 6px; border-radius: 10px; margin-top: 0.5rem; width: 100%; }
-.progress-fill { background: #1f2937; height: 100%; border-radius: 10px; }
-
 .section-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
 .section-subtitle { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem; display: block; }
-
-.activity-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--bg-white);
-    border: 1px solid var(--border-light);
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 0.75rem;
-}
-
-.activity-info { display: flex; align-items: center; gap: 1rem; }
-.activity-text h4 { font-size: 0.95rem; font-weight: 500; }
-.activity-text span { font-size: 0.8rem; color: var(--text-secondary); }
-
-.tag { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
-.tag.health { background: #e0f7fa; color: #006064; }
-.tag.work { background: #e3f2fd; color: #0d47a1; }
-.tag.personal { background: #fff3e0; color: #e65100; }
-.tag.education { background: #f3e5f5; color: #4a148c; }
-.tag.social { background: #fce4ec; color: #880e4f; }
-
-.dot { width: 8px; height: 8px; border-radius: 50%; }
-.dot.health { background: #00bcd4; }
-.dot.work { background: #2196f3; }
-.dot.personal { background: #ff9800; }
-.dot.education { background: #9c27b0; }
-.dot.social { background: #e91e63; }
 
 .weekly-grid {
     display: grid;
@@ -95,12 +63,6 @@ header p { color: var(--text-secondary); font-size: 0.9rem; }
     color: white; margin-bottom: 4px; text-align: left; 
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-
-.bg-health { background: #00bcd4; }
-.bg-work { background: #2196f3; }
-.bg-personal { background: #ff9800; }
-.bg-education { background: #9c27b0; }
-.bg-social { background: #e91e63; }
 
 @media (max-width: 1024px) {
     .lists-grid { grid-template-columns: 1fr; }
@@ -163,13 +125,6 @@ header p { color: var(--text-secondary); font-size: 0.9rem; }
     font-weight: 600;
     white-space: nowrap;
     margin-left: 1rem;
-}
-
-.lists-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
 }
 
 @media (max-width: 768px) {

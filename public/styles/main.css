@@ -4,7 +4,7 @@
     --text-primary: #1f2937;
     --text-secondary: #6b7280;
     --border-light: #e5e7eb;
-    --sidebar-width: 260px;
+    --sidebar-width: 250px;
     --primary-color: #3b82f6;
 }
 
@@ -19,79 +19,10 @@ body {
     background-color: var(--bg-body);
     color: var(--text-primary);
     min-height: 100vh;
-    display: grid;
-    grid-template-columns: var(--sidebar-width) 1fr;
-}
-
-aside {
-    background-color: var(--bg-white);
-    border-right: 1px solid var(--border-light);
-    height: 100vh;
-    position: sticky;
-    top: 0;
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem;
-}
-
-aside .logo {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 2.5rem;
-    padding-left: 0.5rem;
-}
-
-aside nav ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-aside nav li a {
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    color: var(--text-secondary);
-    border-radius: 0.5rem;
-    transition: all 0.2s ease;
-    font-weight: 500;
-}
-
-aside nav li a:hover,
-aside nav li a.active {
-    background-color: #eff6ff;
-    color: var(--primary-color);
-}
-
-aside nav li a .material-icons-round {
-    font-size: 1.25rem;
 }
 
 main {
-    padding: 2.5rem;
     overflow-y: auto;
-}
-
-@media screen and (max-width: 768px) {
-    body {
-        grid-template-columns: 1fr;
-    }
-    
-    aside {
-        height: auto;
-        position: relative;
-        border-right: none;
-        border-bottom: 1px solid var(--border-light);
-        padding: 1rem;
-    }
-
-    aside .logo { margin-bottom: 1rem; }
-    
-    main { padding: 1rem; }
 }
 
 .logout-btn {
@@ -123,4 +54,21 @@ main {
     display: inline-block;
     width: 20px;      
     text-align: center;
+}
+
+@media screen and (min-width: 769px) {
+    main {
+        margin-left: 250px !important;
+        width: calc(100% - 250px) !important;
+        padding: 2.5rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    main {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 1rem;
+        padding-bottom: 100px !important;
+    }
 }
