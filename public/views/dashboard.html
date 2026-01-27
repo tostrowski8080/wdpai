@@ -19,7 +19,7 @@
                 <li><a href="/dashboard" class="active"><span class="material-icons-round">grid_view</span> Dashboard</a></li>
                 <li><a href="/calendar"><span class="material-icons-round">calendar_today</span> Calendar</a></li>
                 <li><a href="/add-activity"><span class="material-icons-round">add</span> Add Activity</a></li>
-                <li><a href="#"><span class="material-icons-round">add</span> Add Category</a></li>
+                <li><a href="/add-category"><span class="material-icons-round">category</span> Add Category</a></li>
                 <li><a href="/profile"><span class="material-icons-round">person</span> Profile</a></li>
             </ul>
         </nav>
@@ -103,11 +103,16 @@
                             <?php 
                                 $catColor = $item['color_hex'] ?? '#3b82f6';
                                 $catName = $item['category_name'] ?? 'General';
+                                $catIcon = $item['icon_name'] ?? '';
                             ?>
                             <a href="/activity/<?= $item['id'] ?>" style="text-decoration: none; color: inherit; display: block;">
                                 <div class="activity-card">
                                     <div class="act-info">
-                                        <div class="dot" style="background-color: <?= $catColor ?>;"></div>
+                                        <?php if (!empty($catIcon)): ?>
+                                            <span class="cat-icon"><?= $catIcon ?></span>
+                                        <?php else: ?>
+                                            <div class="dot" style="background-color: <?= $catColor ?>;"></div>
+                                        <?php endif; ?>
                                         
                                         <div class="act-text">
                                             <h4><?= htmlspecialchars($item['title']) ?></h4>
@@ -140,11 +145,16 @@
                             <?php 
                                 $catColor = $item['color_hex'] ?? '#3b82f6'; 
                                 $catName = $item['category_name'] ?? 'General';
+                                $catIcon = $item['icon_name'] ?? '';
                             ?>
                             <a href="/activity/<?= $item['id'] ?>" style="text-decoration: none; color: inherit; display: block;">
                                 <div class="activity-card">
                                     <div class="act-info">
-                                        <div class="dot" style="background-color: <?= $catColor ?>;"></div>
+                                        <?php if (!empty($catIcon)): ?>
+                                            <span class="cat-icon"><?= $catIcon ?></span>
+                                        <?php else: ?>
+                                            <div class="dot" style="background-color: <?= $catColor ?>;"></div>
+                                        <?php endif; ?>
                                         
                                         <div class="act-text">
                                             <h4><?= htmlspecialchars($item['title']) ?></h4>
@@ -186,8 +196,11 @@
                         
                         <div class="mini-events">
                             <?php foreach ($eventsForDay as $event): ?>
+                                <?php 
+                                    $eventColor = $event['color_hex'] ?? '#3b82f6'; 
+                                ?>
                                 <a href="/activity/<?= $event['id'] ?>" style="text-decoration: none; display: block;">
-                                    <div class="mini-event bg-<?= strtolower($event['category_name'] ?? 'default') ?>">
+                                    <div class="mini-event" style="background-color: <?= $eventColor ?>;">
                                         <?= htmlspecialchars($event['title']) ?>
                                     </div>
                                 </a>

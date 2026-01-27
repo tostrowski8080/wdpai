@@ -1,12 +1,41 @@
+<?php
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    if (isset($_SESSION['user_id'])) {
+        $targetLink = '/dashboard';
+        $btnText = 'Return to Dashboard';
+        $icon = 'grid_view';
+    } else {
+        $targetLink = '/login';
+        $btnText = 'Go to Login';
+        $icon = 'login';
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="public/styles/main.css">
-    <title>404</title>
+    <title>Page Not Found - Activity Helper</title>
+    <link rel="stylesheet" href="/public/styles/404.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body>
-    <h1>404</h1>
+
+    <div class="error-card">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">Page Not Found</h2>
+        <p class="error-desc">
+            We couldn't find the page you were looking for. It might have been removed or the URL is incorrect.
+        </p>
+
+        <a href="<?= $targetLink ?>" class="btn-home">
+            <span class="material-icons-round"><?= $icon ?></span>
+            <?= $btnText ?>
+        </a>
+    </div>
+
 </body>
 </html>

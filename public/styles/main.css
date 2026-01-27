@@ -116,3 +116,11 @@ main {
 .logout-btn .material-icons-round {
     font-size: 1.1rem;
 }
+
+.cat-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+    display: inline-block;
+    width: 20px;      
+    text-align: center;
+}

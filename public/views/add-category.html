@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Category - Activity Helper</title>
+    <link rel="stylesheet" href="/public/styles/main.css">
+    <link rel="stylesheet" href="/public/styles/add.css">
+    <link rel="stylesheet" href="/public/styles/add-category.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+<body>
+
+    <aside>
+        <div class="logo">Activity Helper</div>
+        
+        <nav>
+            <ul>
+                <li><a href="/dashboard"><span class="material-icons-round">grid_view</span> Dashboard</a></li>
+                <li><a href="/calendar"><span class="material-icons-round">calendar_today</span> Calendar</a></li>
+                <li><a href="/add-activity"><span class="material-icons-round">add</span> Add Activity</a></li>
+                <li><a href="/add-category" class="active"><span class="material-icons-round">category</span> Add Category</a></li>
+                <li><a href="/profile"><span class="material-icons-round">person</span> Profile</a></li>
+            </ul>
+        </nav>
+        
+        <a href="/logout" class="logout-btn">
+            <span class="material-icons-round">logout</span>
+            Logout
+        </a>
+    </aside>
+
+    <main>
+        <header>
+            <h1>Add Category</h1>
+            <p>Create new tags to organize your life</p>
+        </header>
+
+        <section class="form-container">
+            <form action="/add-category" method="POST">
+                
+                <?php if(isset($messages)): ?>
+                    <div style="color: #dc2626; background: #fef2f2; padding: 10px; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #fecaca;">
+                        <?= $messages ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if(isset($success)): ?>
+                    <div style="color: #047857; background: #ecfdf5; padding: 10px; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #a7f3d0;">
+                        <?= $success ?>
+                    </div>
+                <?php endif; ?>
+
+                <div class="form-header">
+                    <h3>Category Details</h3>
+                    <p>Customize how your activities are labeled</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="category-name">Category Name</label>
+                    <input type="text" id="category-name" name="category_name" 
+                           placeholder="e.g. Finance, Hobbies" required maxlength="20">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="category-icon">Emoji</label>
+                        <input type="text" id="category-icon" name="category_icon" 
+                               placeholder="e.g. 📓 or 💵" maxlength="2">
+                    </div>
+
+                    <div class="form-group half">
+                        <label for="category-color">Color</label>
+                        <div class="color-input-wrapper">
+                            <input type="color" id="category-color" name="category_color" value="#3b82f6">
+                            <span style="font-size: 0.9rem; color: #6b7280;">Pick a color</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Dashboard Preview</label>
+                    <div class="preview-box">
+                        <span class="preview-label">This is how it will look</span>
+                        
+                        <div id="preview-pill" class="category-preview-pill">
+                            <span id="preview-icon" style="display:none;"></span> 
+                            <span id="preview-dot" class="preview-dot"></span>
+                            <span id="preview-text">New Category</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span class="material-icons-round">check</span>
+                    Create Category
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <script src="/public/scripts/add-category.js"></script>
+</body>
+</html>

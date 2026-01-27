@@ -46,7 +46,6 @@ class AddActivityController extends AppController {
         }
 
         $categories = $this->activityRepository->getCategoriesByUserId($_SESSION['user_id']);
-        
         return $this->render('add-activity', ['categories' => $categories]);
     }
 
@@ -60,6 +59,7 @@ class AddActivityController extends AppController {
         }
 
         if ($this->isPost()) {
+            
             if (empty($_POST['activity_name'])) {
                 $activity = $this->activityRepository->getActivityById($id);
                 $categories = $this->activityRepository->getCategoriesByUserId($_SESSION['user_id']);
@@ -67,7 +67,7 @@ class AddActivityController extends AppController {
                     'activity' => $activity, 
                     'categories' => $categories, 
                     'is_edit' => true,
-                    'messages' => 'Activity name is required.'
+                    'messages' => 'Activity name cannot be empty.'
                 ]);
             }
 
@@ -92,7 +92,8 @@ class AddActivityController extends AppController {
 
         $activity = $this->activityRepository->getActivityById($id);
         
-        if (!$activity || $activity['user_id'] !== $_SESSION['user_id']) {
+        if (!$activity || (int)$activity['user_id'] !== (int)$_SESSION['user_id']) {
+            http_response_code(404);
             include 'public/views/404.html';
             return;
         }

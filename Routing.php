@@ -5,6 +5,7 @@ require_once "src/controllers/DashboardController.php";
 require_once "src/controllers/CalendarController.php";
 require_once "src/controllers/ProfileController.php";
 require_once "src/controllers/AddActivityController.php";
+require_once "src/controllers/CategoryController.php";
 require_once 'src/middleware/checkRequestAllowed.php';
 
 class Routing {
@@ -54,6 +55,10 @@ class Routing {
         'deactivate-account' => [
             'controller' => 'ProfileController',
             'action' => 'deactivate'
+        ],
+        'add-category' => [
+            'controller' => 'CategoryController',
+            'action' => 'add'
         ],
     ];
 
