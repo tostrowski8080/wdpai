@@ -41,8 +41,7 @@ class AddActivityController extends AppController {
 
             $this->activityRepository->addActivity($data);
 
-            $url = "http://$_SERVER[HTTP_HOST]";
-            header("Location: {$url}/dashboard");
+            header("Location: /dashboard");
             exit();
         }
 
@@ -100,8 +99,7 @@ class AddActivityController extends AppController {
     }
 
     private function redirect($path) {
-        $url = "http://$_SERVER[HTTP_HOST]/$path";
-        header("Location: $url");
+        header("Location: /$path");
         exit();
     }
 }

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Activity Helper</title>
+    <link rel="stylesheet" href="public/styles/main.css">
+    <link rel="stylesheet" href="public/styles/profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+<body>
+
+    <aside>
+        <div class="logo">Activity Helper</div>
+        <nav>
+            <ul>
+                <li><a href="dashboard"><span class="material-icons-round">grid_view</span> Dashboard</a></li>
+                <li><a href="calendar"><span class="material-icons-round">calendar_today</span> Calendar</a></li>
+                <li><a href="add-activity"><span class="material-icons-round">add</span> Add Activity</a></li>
+                <li><a href="#"><span class="material-icons-round">add</span> Add Category</a></li>
+                <li><a href="profile" class="active"><span class="material-icons-round">person</span> Profile</a></li>
+            </ul>
+        </nav>
+        <a href="logout" class="logout-btn">
+            <span class="material-icons-round">logout</span>
+            Logout
+        </a>
+    </aside>
+
+    <main>
+        <header>
+            <h1>Profile</h1>
+            <p>Manage your account settings and preferences</p>
+        </header>
+
+        <section class="profile-container">
+
+            <div class="card profile-card">
+                <div class="card-header">
+                    <h3>Personal Information</h3>
+                    <p>Your basic account details</p>
+                </div>
+
+                <?php if (isset($error_info)): ?>
+                    <div class="alert error"><?= $error_info ?></div>
+                <?php endif; ?>
+                <?php if (isset($success_info)): ?>
+                    <div class="alert success"><?= $success_info ?></div>
+                <?php endif; ?>
+
+                <form action="update-profile-info" method="POST">
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="firstname">First Name</label>
+                            <input type="text" id="firstname" name="firstname" value="<?= htmlspecialchars($user['firstname']) ?>">
+                        </div>
+                        <div class="form-group half">
+                            <label for="lastname">Last Name</label>
+                            <input type="text" id="lastname" name="lastname" value="<?= htmlspecialchars($user['lastname']) ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email']) ?>">
+                    </div>
+
+                    <button type="submit" class="btn-outline full-width">Update Profile</button>
+                </form>
+            </div>
+
+            <div class="card profile-card">
+                <div class="card-header">
+                    <h3>Security</h3>
+                    <p>Manage your password</p>
+                </div>
+
+                <?php if (isset($error_pwd)): ?>
+                    <div class="alert error"><?= $error_pwd ?></div>
+                <?php endif; ?>
+                <?php if (isset($success_pwd)): ?>
+                    <div class="alert success"><?= $success_pwd ?></div>
+                <?php endif; ?>
+
+                <form action="change-password" method="POST">
+                    <div class="form-group">
+                        <label for="current_password">Current Password</label>
+                        <input type="password" id="current_password" name="current_password" placeholder="Enter current password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new_password">New Password</label>
+                        <input type="password" id="new_password" name="new_password" placeholder="Enter new password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm New Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm new password">
+                    </div>
+
+                    <button type="submit" class="btn-outline full-width">Change Password</button>
+                </form>
+            </div>
+
+            <div class="card profile-card danger-zone">
+                <div class="card-header">
+                    <h3>Account Actions</h3>
+                    <p>Irreversible actions</p>
+                </div>
+                
+                <form action="deactivate-account" method="POST" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+                    <button type="submit" class="btn-danger full-width">
+                        <span class="material-icons-round">delete_forever</span>
+                        Deactivate Account
+                    </button>
+                </form>
+            </div>
+
+        </section>
+    </main>
+
+</body>
+</html>

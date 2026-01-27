@@ -18,8 +18,7 @@ class DashboardController extends AppController {
         }
 
         if (!isset($_SESSION['user_id'])) {
-            $url = "http://$_SERVER[HTTP_HOST]";
-            header("Location: {$url}/login");
+            header("Location: /login");
             exit();
         }
 

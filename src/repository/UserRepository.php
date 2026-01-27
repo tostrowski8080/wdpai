@@ -45,7 +45,7 @@ class UserRepository extends Repository
         return $user;
     }
 
-public function createUser(string $email, string $hashedPassword, string $firstname, string $lastname) 
+    public function createUser(string $email, string $hashedPassword, string $firstname, string $lastname) 
     {
         $pdo = $this->database->connect();
         
@@ -95,6 +95,64 @@ public function createUser(string $email, string $hashedPassword, string $firstn
             if ($pdo->inTransaction()) {
                 $pdo->rollBack();
             }
+            throw $e;
+        }
+    }
+
+    public function getUserById(int $id): ?array {
+        $stmt = $this->database->connect()->prepare('
+            SELECT * FROM users WHERE id = :id
+        ');
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $user ?: null;
+    }
+
+    public function updateUserInfo(int $id, string $firstname, string $lastname, string $email): void {
+        $stmt = $this->database->connect()->prepare('
+            UPDATE users 
+            SET firstname = :firstname, lastname = :lastname, email = :email 
+            WHERE id = :id
+        ');
+        $stmt->bindParam(':firstname', $firstname, PDO::PARAM_STR);
+        $stmt->bindParam(':lastname', $lastname, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function updateUserPassword(int $id, string $hashedPassword): void {
+        $stmt = $this->database->connect()->prepare('
+            UPDATE users SET password = :password WHERE id = :id
+        ');
+        $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function deleteUser(int $id): void {
+        $pdo = $this->database->connect();
+        
+        try {
+            $pdo->beginTransaction();
+
+            $stmt = $pdo->prepare('DELETE FROM activities WHERE user_id = :id');
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $stmt = $pdo->prepare('DELETE FROM categories WHERE user_id = :id');
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $stmt = $pdo->prepare('DELETE FROM users WHERE id = :id');
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $pdo->commit();
+        } catch (Exception $e) {
+            $pdo->rollBack();
             throw $e;
         }
     }

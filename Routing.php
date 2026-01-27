@@ -3,6 +3,7 @@
 require_once "src/controllers/SecurityController.php";
 require_once "src/controllers/DashboardController.php";
 require_once "src/controllers/CalendarController.php";
+require_once "src/controllers/ProfileController.php";
 require_once "src/controllers/AddActivityController.php";
 require_once 'src/middleware/checkRequestAllowed.php';
 
@@ -37,6 +38,22 @@ class Routing {
         'logout' => [
             'controller' => 'SecurityController',
             'action' => 'logout'
+        ],
+        'profile' => [
+            'controller' => 'ProfileController',
+            'action' => 'index'
+        ],
+        'update-profile-info' => [
+            'controller' => 'ProfileController',
+            'action' => 'updateInfo'
+        ],
+        'change-password' => [
+            'controller' => 'ProfileController',
+            'action' => 'changePassword'
+        ],
+        'deactivate-account' => [
+            'controller' => 'ProfileController',
+            'action' => 'deactivate'
         ],
     ];
 
