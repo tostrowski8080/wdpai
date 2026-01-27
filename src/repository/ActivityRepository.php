@@ -86,7 +86,7 @@ class ActivityRepository extends Repository {
         return $activity;
     }
 
-public function addActivity(array $data): void
+    public function addActivity(array $data): void
     {
         $stmt = $this->database->connect()->prepare('
             INSERT INTO activities (
@@ -224,10 +224,64 @@ public function addActivity(array $data): void
             SET is_completed = TRUE 
             WHERE user_id = :user_id 
             AND is_completed = FALSE 
+            AND is_recurring = FALSE
             AND end_time < CURRENT_TIMESTAMP
         ');
         
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
         $stmt->execute();
+    }
+
+    public function getActivitiesForMonth(int $userId, int $month, int $year): array
+    {
+        $startDate = date("$year-$month-01 00:00:00");
+        $endDate = date("Y-m-t 23:59:59", strtotime($startDate));
+
+        $stmt = $this->database->connect()->prepare('
+            SELECT a.*, c.name as category_name, c.color_hex
+            FROM activities a
+            LEFT JOIN categories c ON a.category_id = c.id
+            WHERE a.user_id = :user_id 
+            AND (
+                (a.start_time >= :start_date AND a.start_time <= :end_date)
+                OR 
+                (a.is_recurring = TRUE AND a.start_time <= :end_date)
+            )
+            ORDER BY a.start_time ASC
+        ');
+
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':start_date', $startDate, PDO::PARAM_STR);
+        $stmt->bindParam(':end_date', $endDate, PDO::PARAM_STR);
+        
+        $stmt->execute();
+        $rawActivities = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $this->expandRecurringEvents($rawActivities, $startDate, $endDate);
+    }
+
+    public function getActivitiesByDateRange(int $userId, string $startDate, string $endDate): array
+    {
+        $stmt = $this->database->connect()->prepare('
+            SELECT a.*, c.name as category_name, c.color_hex
+            FROM activities a
+            LEFT JOIN categories c ON a.category_id = c.id
+            WHERE a.user_id = :user_id 
+            AND (
+                (a.start_time >= :start_date AND a.start_time <= :end_date)
+                OR 
+                (a.is_recurring = TRUE AND a.start_time <= :end_date)
+            )
+            ORDER BY a.start_time ASC
+        ');
+
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':start_date', $startDate, PDO::PARAM_STR);
+        $stmt->bindParam(':end_date', $endDate, PDO::PARAM_STR);
+        
+        $stmt->execute();
+        $rawActivities = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $this->expandRecurringEvents($rawActivities, $startDate, $endDate);
     }
 }

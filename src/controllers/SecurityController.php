@@ -82,4 +82,12 @@ class SecurityController extends AppController {
 
         return $this->render('login', ['messages' => 'Registration completed, please login']);
     }
+
+    public function logout() {
+        session_start();
+        session_unset();
+        session_destroy();
+        header("Location: login");
+        exit();
+    }
 }

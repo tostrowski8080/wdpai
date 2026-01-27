@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar - Activity Helper</title>
+    <link rel="stylesheet" href="public/styles/main.css">
+    <link rel="stylesheet" href="public/styles/calendar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+<body>
+    <aside>
+        <div class="logo">Activity Helper</div>
+        
+        <nav>
+            <ul>
+                <li><a href="dashboard"><span class="material-icons-round">grid_view</span> Dashboard</a></li>
+                <li><a href="calendar"><span class="material-icons-round">calendar_today</span> Calendar</a></li>
+                <li><a href="add-activity"><span class="material-icons-round">add</span> Add New</a></li>
+                <li><a href="#"><span class="material-icons-round">add</span> Add Category</a></li>
+                <li><a href="#"><span class="material-icons-round">person</span> Profile</a></li>
+            </ul>
+        </nav>
+
+        <a href="logout" class="logout-btn">
+            <span class="material-icons-round">logout</span>
+            Logout
+        </a>
+    </aside>
+    <main>
+        <header class="calendar-header">
+            <div>
+                <h1>Calendar</h1>
+                <p>Plan and view your activities</p>
+            </div>
+            
+            <div class="view-toggles">
+                <a href="?view=month&date=<?= $currentDate ?>" class="<?= $view === 'month' ? 'active' : '' ?>">Month</a>
+                <a href="?view=week&date=<?= $currentDate ?>" class="<?= $view === 'week' ? 'active' : '' ?>">Week</a>
+                <a href="?view=day&date=<?= $currentDate ?>" class="<?= $view === 'day' ? 'active' : '' ?>">Day</a>
+            </div>
+        </header>
+
+        <section class="calendar-card">
+            
+            <div class="calendar-nav">
+                <span class="current-month"><?= $title ?></span>
+                <div class="nav-arrows">
+                    <a href="calendar<?= $prevLink ?>" class="nav-btn">
+                        <span class="material-icons-round">chevron_left</span>
+                    </a>
+                    <a href="calendar<?= $nextLink ?>" class="nav-btn">
+                        <span class="material-icons-round">chevron_right</span>
+                    </a>
+                </div>
+            </div>
+
+            <?php if ($view === 'month'): ?>
+                <div class="calendar-grid month-view">
+                    <div class="weekday">Sun</div><div class="weekday">Mon</div><div class="weekday">Tue</div>
+                    <div class="weekday">Wed</div><div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
+
+                    <?php for($i = 0; $i < $paddingLeft; $i++): ?>
+                        <div class="day-cell inactive"></div>
+                    <?php endfor; ?>
+
+                    <?php for($day = 1; $day <= $daysInMonth; $day++): ?>
+                        <?php 
+                            $currentDayKey = sprintf('%04d-%02d-%02d', $year, $month, $day);
+                            $events = $activitiesByDay[$currentDayKey] ?? [];
+                        ?>
+                        <div class="day-cell">
+                            <span class="day-number"><?= $day ?></span>
+                            <div class="day-events">
+                                <?php 
+                                    $limit = 2; $count = 0;
+                                    foreach ($events as $event): 
+                                        if ($count < $limit):
+                                            $color = $event['color_hex'] ?? '#3b82f6';
+                                ?>
+                                        <div class="event-btn" style="background-color: <?= $color ?>;">
+                                            <span class="ev-time"><?= date('H:i', strtotime($event['start_time'])) ?></span>
+                                            <span class="ev-title"><?= htmlspecialchars($event['title']) ?></span>
+                                        </div>
+                                <?php 
+                                        endif; $count++;
+                                    endforeach; 
+                                ?>
+                                <?php if ($count > $limit): ?>
+                                    <div class="more-events">+<?= $count - $limit ?> more</div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endfor; ?>
+                    
+                    <?php 
+                        $totalCells = $paddingLeft + $daysInMonth;
+                        $remaining = 7 - ($totalCells % 7);
+                        if ($remaining < 7 && $remaining > 0): 
+                            for($j = 0; $j < $remaining; $j++): ?>
+                                <div class="day-cell inactive"></div>
+                            <?php endfor; 
+                        endif; 
+                    ?>
+                </div>
+            <?php endif; ?>
+
+
+            <?php if ($view === 'week'): ?>
+                <div class="calendar-grid week-view">
+                    <?php for($i=0; $i<7; $i++): 
+                        $dayTs = strtotime("+$i days", $weekStartTs);
+                        $dateKey = date('Y-m-d', $dayTs);
+                        $isToday = ($dateKey === date('Y-m-d'));
+                    ?>
+                        <div class="weekday week-header <?= $isToday ? 'highlight' : '' ?>">
+                            <span class="wk-day"><?= date('D', $dayTs) ?></span>
+                            <span class="wk-date"><?= date('j', $dayTs) ?></span>
+                        </div>
+                    <?php endfor; ?>
+
+                    <?php for($i=0; $i<7; $i++): 
+                        $dayTs = strtotime("+$i days", $weekStartTs);
+                        $dateKey = date('Y-m-d', $dayTs);
+                        $events = $activitiesByDay[$dateKey] ?? [];
+                    ?>
+                        <div class="day-cell week-col">
+                            <div class="day-events">
+                                <?php foreach ($events as $event): 
+                                    $color = $event['color_hex'] ?? '#3b82f6';
+                                ?>
+                                    <div class="event-btn" style="background-color: <?= $color ?>;">
+                                        <span class="ev-time"><?= date('H:i', strtotime($event['start_time'])) ?></span>
+                                        <span class="ev-title"><?= htmlspecialchars($event['title']) ?></span>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endfor; ?>
+                </div>
+            <?php endif; ?>
+
+
+            <?php if ($view === 'day'): ?>
+                <div class="day-view-container">
+                    <?php if (empty($activities)): ?>
+                        <div class="empty-state">
+                            <span class="material-icons-round" style="font-size: 48px; display:block; margin-bottom:1rem;">event_busy</span>
+                            No activities scheduled for this day.
+                        </div>
+                    <?php else: ?>
+                        <div class="day-events-list">
+                            <?php foreach ($activities as $event): 
+                                $color = $event['color_hex'] ?? '#3b82f6';
+                            ?>
+                                <div class="event-btn" style="background-color: <?= $color ?>;">
+                                    <div class="ev-left">
+                                        <span class="ev-time">
+                                            <?= date('H:i', strtotime($event['start_time'])) ?> - 
+                                            <?= date('H:i', strtotime($event['end_time'])) ?>
+                                        </span>
+                                        <span class="ev-title"><?= htmlspecialchars($event['title']) ?></span>
+                                    </div>
+                                    <span class="material-icons-round" style="font-size: 1.2rem; opacity: 0.8;">chevron_right</span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+
+        </section>
+    </main>
+</body>
+</html>

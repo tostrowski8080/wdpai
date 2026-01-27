@@ -24,6 +24,8 @@ class DashboardController extends AppController {
         }
 
         $userId = $_SESSION['user_id'];
+
+        $this->activityRepository->checkAndCompleteExpiredActivities($userId);
         
         $activities = $this->activityRepository->getThisWeekActivitiesByUser($userId);
 
@@ -43,22 +45,37 @@ class DashboardController extends AppController {
         ];
 
         $currentDate = date('Y-m-d');
+        $now = time();
 
         foreach ($activities as $activity) {
             $start = strtotime($activity['start_time']);
             $end = strtotime($activity['end_time']);
             $dateString = date('Y-m-d', $start);
             $dayName = date('l', $start);
-            $stats['total_weekly_count']++;
 
-            if ($activity['is_completed']) {
+            $isEffectiveCompleted = false;
+
+            if ($activity['is_recurring']) {
+                if ($end < $now) {
+                    $isEffectiveCompleted = true;
+                }
+            } else {
+                if ($activity['is_completed']) {
+                    $isEffectiveCompleted = true;
+                }
+            }
+
+            $stats['total_weekly_count']++;
+            
+            if ($isEffectiveCompleted) {
                 $stats['completed_weekly_count']++;
             }
 
             if ($dateString === $currentDate) {
                 $todayActivities[] = $activity;
                 $stats['total_count']++;
-                if ($activity['is_completed']) {
+                
+                if ($isEffectiveCompleted) {
                     $stats['completed_count']++;
                 }
             } 

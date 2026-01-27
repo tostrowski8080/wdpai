@@ -2,6 +2,7 @@
 
 require_once "src/controllers/SecurityController.php";
 require_once "src/controllers/DashboardController.php";
+require_once "src/controllers/CalendarController.php";
 require_once "src/controllers/AddActivityController.php";
 require_once 'src/middleware/checkRequestAllowed.php';
 
@@ -29,6 +30,14 @@ class Routing {
             'controller' => "AddActivityController",
             'action' => 'modify'
         ],
+        'calendar' => [
+            'controller' => "CalendarController",
+            'action' => 'index'
+        ],
+        'logout' => [
+            'controller' => 'SecurityController',
+            'action' => 'logout'
+        ],
     ];
 
     public static function run(string $path) {
@@ -36,8 +45,14 @@ class Routing {
         
         $actionKey = $urlParts[0];
 
-        if (!array_key_exists($actionKey, self::$routes)) {
-            include 'public/views/404.html';
+        if (!isset(self::$routes[$path])) {
+            http_response_code(404);
+            $notFoundPath = __DIR__ . '/public/views/404.html';
+            if (file_exists($notFoundPath)) {
+                include $notFoundPath;
+            } else {
+                echo "404 - Page not found";
+            }
             return;
         }
 
