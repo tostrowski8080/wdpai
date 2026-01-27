@@ -16,7 +16,7 @@
         <nav>
             <ul>
                 <li><a href="dashboard"><span class="material-icons-round">grid_view</span> Dashboard</a></li>
-                <li><a href="calendar"><span class="material-icons-round">calendar_today</span> Calendar</a></li>
+                <li><a href="calendar" class="active"><span class="material-icons-round">calendar_today</span> Calendar</a></li>
                 <li><a href="add-activity"><span class="material-icons-round">add</span> Add Activity</a></li>
                 <li><a href="#"><span class="material-icons-round">add</span> Add Category</a></li>
                 <li><a href="profile"><span class="material-icons-round">person</span> Profile</a></li>
@@ -79,10 +79,12 @@
                                         if ($count < $limit):
                                             $color = $event['color_hex'] ?? '#3b82f6';
                                 ?>
+                                    <a href="activity/<?= $event['id'] ?>" style="text-decoration: none;">
                                         <div class="event-btn" style="background-color: <?= $color ?>;">
                                             <span class="ev-time"><?= date('H:i', strtotime($event['start_time'])) ?></span>
                                             <span class="ev-title"><?= htmlspecialchars($event['title']) ?></span>
                                         </div>
+                                    </a>
                                 <?php 
                                         endif; $count++;
                                     endforeach; 
@@ -105,7 +107,6 @@
                     ?>
                 </div>
             <?php endif; ?>
-
 
             <?php if ($view === 'week'): ?>
                 <div class="calendar-grid week-view">
@@ -130,17 +131,18 @@
                                 <?php foreach ($events as $event): 
                                     $color = $event['color_hex'] ?? '#3b82f6';
                                 ?>
-                                    <div class="event-btn" style="background-color: <?= $color ?>;">
-                                        <span class="ev-time"><?= date('H:i', strtotime($event['start_time'])) ?></span>
-                                        <span class="ev-title"><?= htmlspecialchars($event['title']) ?></span>
-                                    </div>
+                                    <a href="activity/<?= $event['id'] ?>" style="text-decoration: none;">
+                                        <div class="event-btn" style="background-color: <?= $color ?>;">
+                                            <span class="ev-time"><?= date('H:i', strtotime($event['start_time'])) ?></span>
+                                            <span class="ev-title"><?= htmlspecialchars($event['title']) ?></span>
+                                        </div>
+                                    </a>
                                 <?php endforeach; ?>
                             </div>
                         </div>
                     <?php endfor; ?>
                 </div>
             <?php endif; ?>
-
 
             <?php if ($view === 'day'): ?>
                 <div class="day-view-container">
@@ -154,16 +156,18 @@
                             <?php foreach ($activities as $event): 
                                 $color = $event['color_hex'] ?? '#3b82f6';
                             ?>
-                                <div class="event-btn" style="background-color: <?= $color ?>;">
-                                    <div class="ev-left">
-                                        <span class="ev-time">
-                                            <?= date('H:i', strtotime($event['start_time'])) ?> - 
-                                            <?= date('H:i', strtotime($event['end_time'])) ?>
-                                        </span>
-                                        <span class="ev-title"><?= htmlspecialchars($event['title']) ?></span>
+                                <a href="activity/<?= $event['id'] ?>" style="text-decoration: none;">
+                                    <div class="event-btn" style="background-color: <?= $color ?>;">
+                                        <div class="ev-left">
+                                            <span class="ev-time">
+                                                <?= date('H:i', strtotime($event['start_time'])) ?> - 
+                                                <?= date('H:i', strtotime($event['end_time'])) ?>
+                                            </span>
+                                            <span class="ev-title"><?= htmlspecialchars($event['title']) ?></span>
+                                        </div>
+                                        <span class="material-icons-round" style="font-size: 1.2rem; opacity: 0.8;">chevron_right</span>
                                     </div>
-                                    <span class="material-icons-round" style="font-size: 1.2rem; opacity: 0.8;">chevron_right</span>
-                                </div>
+                                </a>
                             <?php endforeach; ?>
                         </div>
                     <?php endif; ?>

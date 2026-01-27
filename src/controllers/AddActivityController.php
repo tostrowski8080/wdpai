@@ -55,16 +55,29 @@ class AddActivityController extends AppController {
         $this->checkSession();
 
         if (!$id) {
-            $this->redirect('dashboard');
+            header("Location: /dashboard");
+            exit();
         }
 
         if ($this->isPost()) {
-            $startTime = $_POST['date'] . ' ' . $_POST['start_time'];
-            $endTime = $_POST['date'] . ' ' . $_POST['end_time'];
+            if (empty($_POST['activity_name'])) {
+                $activity = $this->activityRepository->getActivityById($id);
+                $categories = $this->activityRepository->getCategoriesByUserId($_SESSION['user_id']);
+                return $this->render('add-activity', [
+                    'activity' => $activity, 
+                    'categories' => $categories, 
+                    'is_edit' => true,
+                    'messages' => 'Activity name is required.'
+                ]);
+            }
+
+            $useDeadline = isset($_POST['use_deadline']);
+            $startTime = $useDeadline ? date('Y-m-d H:i:s') : ($_POST['date'] . ' ' . $_POST['start_time']);
+            $endTime = $useDeadline ? ($_POST['deadline_date'] . ' 23:59:59') : ($_POST['date'] . ' ' . $_POST['end_time']);
 
             $data = [
                 'title'             => $_POST['activity_name'],
-                'category_id'       => (int)$_POST['category_id'],
+                'category_id'       => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null,
                 'is_recurring'      => isset($_POST['recurring']),
                 'recurrence_pattern'=> isset($_POST['recurring']) ? $_POST['recurrence_pattern'] : null,
                 'start_time'        => $startTime,
@@ -72,15 +85,19 @@ class AddActivityController extends AppController {
             ];
 
             $this->activityRepository->updateActivity($id, $data);
-            $this->redirect('dashboard');
+            
+            header("Location: /dashboard");
+            exit();
         }
 
         $activity = $this->activityRepository->getActivityById($id);
-        $categories = $this->activityRepository->getCategoriesByUserId($_SESSION['user_id']);
-
-        if (!$activity) {
-            return $this->render('404');
+        
+        if (!$activity || $activity['user_id'] !== $_SESSION['user_id']) {
+            include 'public/views/404.html';
+            return;
         }
+
+        $categories = $this->activityRepository->getCategoriesByUserId($_SESSION['user_id']);
 
         return $this->render('add-activity', [
             'activity' => $activity, 
@@ -90,16 +107,10 @@ class AddActivityController extends AppController {
     }
 
     private function checkSession() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        if (session_status() === PHP_SESSION_NONE) session_start();
         if (!isset($_SESSION['user_id'])) {
-            $this->redirect('login');
+            header("Location: /login");
+            exit();
         }
-    }
-
-    private function redirect($path) {
-        header("Location: /$path");
-        exit();
     }
 }

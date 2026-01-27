@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Activity - Activity Helper</title>
-    <link rel="stylesheet" href="public/styles/main.css">
-    <link rel="stylesheet" href="public/styles/add.css">
+    <title><?= isset($is_edit) ? 'Edit Activity' : 'Add Activity' ?> - Activity Helper</title>
+    <link rel="stylesheet" href="/public/styles/main.css">
+    <link rel="stylesheet" href="/public/styles/add.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 <body>
+
     <aside>
         <div class="logo">Activity Helper</div>
-        
         <nav>
             <ul>
-                <li><a href="dashboard"><span class="material-icons-round">grid_view</span> Dashboard</a></li>
-                <li><a href="calendar"><span class="material-icons-round">calendar_today</span> Calendar</a></li>
-                <li><a href="add-activity"><span class="material-icons-round">add</span> Add Activity</a></li>
+                <li><a href="/dashboard"><span class="material-icons-round">grid_view</span> Dashboard</a></li>
+                <li><a href="/calendar"><span class="material-icons-round">calendar_today</span> Calendar</a></li>
+                <li><a href="/add-activity"><span class="material-icons-round">add</span> Add Activity</a></li>
                 <li><a href="#"><span class="material-icons-round">add</span> Add Category</a></li>
-                <li><a href="profile"><span class="material-icons-round">person</span> Profile</a></li>
+                <li><a href="/profile"><span class="material-icons-round">person</span> Profile</a></li>
             </ul>
         </nav>
-
-        <a href="logout" class="logout-btn">
+        
+        <a href="/logout" class="logout-btn">
             <span class="material-icons-round">logout</span>
             Logout
         </a>
@@ -31,13 +31,19 @@
 
     <main>
         <header>
-            <h1>Add Activity</h1>
-            <p>Create a new activity for your schedule</p>
+            <h1><?= isset($is_edit) ? 'Edit Activity' : 'Add Activity' ?></h1>
+            <p><?= isset($is_edit) ? 'Modify your existing activity' : 'Create a new activity for your schedule' ?></p>
         </header>
 
         <section class="form-container">
-            <form action="add-activity" method="POST">
+            <form action="<?= isset($is_edit) ? '' : '/add-activity' ?>" method="POST">
                 
+                <?php if(isset($messages)): ?>
+                    <div style="color: #dc2626; background: #fef2f2; padding: 10px; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #fecaca;">
+                        <?= $messages ?>
+                    </div>
+                <?php endif; ?>
+
                 <div class="form-header">
                     <h3>Activity Details</h3>
                     <p>Fill in the information about your activity</p>
@@ -57,7 +63,6 @@
                            value="<?= isset($activity['category_id']) ? $activity['category_id'] : '' ?>">
 
                     <div class="custom-select-container" id="custom-category-dropdown">
-                        
                         <div class="custom-select-trigger" id="custom-select-trigger">
                             <span class="placeholder">Select a category...</span>
                             <span class="material-icons-round arrow">expand_more</span>
@@ -161,7 +166,7 @@
 
                 <button type="submit" class="btn-submit">
                     <span class="material-icons-round">check</span>
-                    Add Activity
+                    <?= isset($is_edit) ? 'Save Changes' : 'Add Activity' ?>
                 </button>
 
             </form>
@@ -169,6 +174,6 @@
 
     </main>
 
-    <script src="public/scripts/add-activity.js"></script>
+    <script src="/public/scripts/add-activity.js"></script>
 </body>
 </html>

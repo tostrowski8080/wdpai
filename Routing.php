@@ -57,24 +57,24 @@ class Routing {
         ],
     ];
 
-    public static function run(string $path) {
+public static function run(string $path) {
         $urlParts = explode("/", $path);
-        
         $actionKey = $urlParts[0];
 
-        if (!isset(self::$routes[$path])) {
-            http_response_code(404);
-            $notFoundPath = __DIR__ . '/public/views/404.html';
-            if (file_exists($notFoundPath)) {
-                include $notFoundPath;
-            } else {
-                echo "404 - Page not found";
-            }
+        if ($actionKey === 'activity' && isset($urlParts[1]) && is_numeric($urlParts[1])) {
+            $controllerName = 'AddActivityController';
+            $methodName = 'modify';
+            $id = (int)$urlParts[1];
+        } 
+        elseif (array_key_exists($actionKey, self::$routes)) {
+            $controllerName = self::$routes[$actionKey]['controller'];
+            $methodName = self::$routes[$actionKey]['action'];
+            $id = $urlParts[1] ?? null;
+        } 
+        else {
+            include 'public/views/404.html';
             return;
         }
-
-        $controllerName = self::$routes[$actionKey]['controller'];
-        $methodName = self::$routes[$actionKey]['action'];
 
         if (!isset(self::$instances[$controllerName])) {
             self::$instances[$controllerName] = new $controllerName();
@@ -83,8 +83,6 @@ class Routing {
         $object = self::$instances[$controllerName];
 
         checkRequestAllowed($object, $methodName);
-
-        $id = $urlParts[1] ?? null;
 
         $object->$methodName($id);
     }

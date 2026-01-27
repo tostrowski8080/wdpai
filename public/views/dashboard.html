@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Activity Helper Dashboard</title>
-    <link rel="stylesheet" href="public/styles/main.css">
-    <link rel="stylesheet" href="public/styles/dashboard.css">
+    <link rel="stylesheet" href="/public/styles/main.css">
+    <link rel="stylesheet" href="/public/styles/dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
@@ -16,15 +16,15 @@
         
         <nav>
             <ul>
-                <li><a href="dashboard"><span class="material-icons-round">grid_view</span> Dashboard</a></li>
-                <li><a href="calendar"><span class="material-icons-round">calendar_today</span> Calendar</a></li>
-                <li><a href="add-activity"><span class="material-icons-round">add</span> Add Activity</a></li>
+                <li><a href="/dashboard" class="active"><span class="material-icons-round">grid_view</span> Dashboard</a></li>
+                <li><a href="/calendar"><span class="material-icons-round">calendar_today</span> Calendar</a></li>
+                <li><a href="/add-activity"><span class="material-icons-round">add</span> Add Activity</a></li>
                 <li><a href="#"><span class="material-icons-round">add</span> Add Category</a></li>
-                <li><a href="profile"><span class="material-icons-round">person</span> Profile</a></li>
+                <li><a href="/profile"><span class="material-icons-round">person</span> Profile</a></li>
             </ul>
         </nav>
 
-        <a href="logout" class="logout-btn">
+        <a href="/logout" class="logout-btn">
             <span class="material-icons-round">logout</span>
             Logout
         </a>
@@ -104,23 +104,25 @@
                                 $catColor = $item['color_hex'] ?? '#3b82f6';
                                 $catName = $item['category_name'] ?? 'General';
                             ?>
-                            <div class="activity-card">
-                                <div class="act-info">
-                                    <div class="dot" style="background-color: <?= $catColor ?>;"></div>
+                            <a href="/activity/<?= $item['id'] ?>" style="text-decoration: none; color: inherit; display: block;">
+                                <div class="activity-card">
+                                    <div class="act-info">
+                                        <div class="dot" style="background-color: <?= $catColor ?>;"></div>
+                                        
+                                        <div class="act-text">
+                                            <h4><?= htmlspecialchars($item['title']) ?></h4>
+                                            <span class="time">
+                                                <?= date('H:i', strtotime($item['start_time'])) ?> - 
+                                                <?= date('H:i', strtotime($item['end_time'])) ?>
+                                            </span>
+                                        </div>
+                                    </div>
                                     
-                                    <div class="act-text">
-                                        <h4><?= htmlspecialchars($item['title']) ?></h4>
-                                        <span class="time">
-                                            <?= date('H:i', strtotime($item['start_time'])) ?> - 
-                                            <?= date('H:i', strtotime($item['end_time'])) ?>
-                                        </span>
+                                    <div class="category-tag" style="<?= getTagStyles($catColor) ?>">
+                                        <?= htmlspecialchars($catName) ?>
                                     </div>
                                 </div>
-                                
-                                <div class="category-tag" style="<?= getTagStyles($catColor) ?>">
-                                    <?= htmlspecialchars($catName) ?>
-                                </div>
-                            </div>
+                            </a>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
@@ -139,22 +141,24 @@
                                 $catColor = $item['color_hex'] ?? '#3b82f6'; 
                                 $catName = $item['category_name'] ?? 'General';
                             ?>
-                            <div class="activity-card">
-                                <div class="act-info">
-                                    <div class="dot" style="background-color: <?= $catColor ?>;"></div>
+                            <a href="/activity/<?= $item['id'] ?>" style="text-decoration: none; color: inherit; display: block;">
+                                <div class="activity-card">
+                                    <div class="act-info">
+                                        <div class="dot" style="background-color: <?= $catColor ?>;"></div>
+                                        
+                                        <div class="act-text">
+                                            <h4><?= htmlspecialchars($item['title']) ?></h4>
+                                            <span class="time">
+                                                <?= date('M d • H:i', strtotime($item['start_time'])) ?>
+                                            </span>
+                                        </div>
+                                    </div>
                                     
-                                    <div class="act-text">
-                                        <h4><?= htmlspecialchars($item['title']) ?></h4>
-                                        <span class="time">
-                                            <?= date('M d • H:i', strtotime($item['start_time'])) ?>
-                                        </span>
+                                    <div class="category-tag" style="<?= getTagStyles($catColor) ?>">
+                                        <?= htmlspecialchars($catName) ?>
                                     </div>
                                 </div>
-                                
-                                <div class="category-tag" style="<?= getTagStyles($catColor) ?>">
-                                    <?= htmlspecialchars($catName) ?>
-                                </div>
-                            </div>
+                            </a>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
@@ -177,11 +181,16 @@
                     ?>
 
                     <div class="day-column <?= $isToday ? 'active' : '' ?>">
-                        <span class="day-header"><?= substr($dayName, 0, 3) ?></span> <span class="day-number"><?= date('j', $weekStart) ?></span>   <div class="mini-events">
+                        <span class="day-header"><?= substr($dayName, 0, 3) ?></span> 
+                        <span class="day-number"><?= date('j', $weekStart) ?></span>
+                        
+                        <div class="mini-events">
                             <?php foreach ($eventsForDay as $event): ?>
-                                <div class="mini-event bg-<?= strtolower($event['category_name'] ?? 'default') ?>">
-                                    <?= htmlspecialchars($event['title']) ?>
-                                </div>
+                                <a href="/activity/<?= $event['id'] ?>" style="text-decoration: none; display: block;">
+                                    <div class="mini-event bg-<?= strtolower($event['category_name'] ?? 'default') ?>">
+                                        <?= htmlspecialchars($event['title']) ?>
+                                    </div>
+                                </a>
                             <?php endforeach; ?>
                         </div>
                     </div>
