@@ -1,0 +1,59 @@
+<?php $currentPage = 'admin'; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/public/styles/main.css">
+    <link rel="stylesheet" href="/public/styles/sidebar.css">
+    <link rel="stylesheet" href="/public/styles/admin.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+<body>
+    <?php include 'public/views/sidebar.html'; ?>
+
+    <main>
+        <header>
+            <h1>User Management</h1>
+        </header>
+
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($users as $user): ?>
+                <tr>
+                    <td><?= $user['id'] ?></td>
+                    <td><?= htmlspecialchars($user['firstname'] . ' ' . $user['lastname']) ?></td>
+                    <td><?= htmlspecialchars($user['email']) ?></td>
+                    <td>
+                        <span class="role-badge role-<?= $user['role'] ?? $user['role_name'] ?>" id="badge-<?= $user['id'] ?>">
+                            <?= $user['role'] ?? $user['role_name'] ?>
+                        </span>
+                    </td>
+                    <td>
+                        <?php if ($user['id'] !== $_SESSION['user_id']): ?>
+                            <button class="btn-toggle" 
+                                    onclick="toggleRole(<?= $user['id'] ?>, '<?= $user['role'] ?? $user['role_name'] ?>')">
+                                Switch Role
+                            </button>
+                        <?php else: ?>
+                            <span style="color:#999; font-size: 0.9em;">(You)</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </main>
+    <script src="/public/scripts/admin.js"></script>
+</body>
+</html>

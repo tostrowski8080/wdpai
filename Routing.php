@@ -5,6 +5,7 @@ require_once "src/controllers/DashboardController.php";
 require_once "src/controllers/CalendarController.php";
 require_once "src/controllers/ProfileController.php";
 require_once "src/controllers/AddActivityController.php";
+require_once "src/controllers/AdminController.php";
 require_once "src/controllers/CategoryController.php";
 require_once 'src/middleware/checkRequestAllowed.php';
 
@@ -59,6 +60,14 @@ class Routing {
         'add-category' => [
             'controller' => 'CategoryController',
             'action' => 'add'
+        ],
+        'admin' => [
+            'controller' => 'AdminController',
+            'action' => 'users'
+        ],
+        'admin-update-role' => [
+            'controller' => 'AdminController',
+            'action' => 'updateRole'
         ],
     ];
 

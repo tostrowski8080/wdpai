@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Repository.php';
+require_once __DIR__.'/../model/User.php';
 
 class UserRepository extends Repository
 {
@@ -10,39 +11,41 @@ class UserRepository extends Repository
         return self::$instance ??= new UserRepository();
     }
 
-    public function getUsers(): ?array
-    {
+    public function getUsers(): array {
         $stmt = $this->database->connect()->prepare('
-            SELECT * FROM users
+            SELECT u.id, u.firstname, u.lastname, u.email, r.name as role_name
+            FROM users u
+            LEFT JOIN roles r ON u.role_id = r.id
+            ORDER BY u.id ASC
         ');
         $stmt->execute();
-
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if ($users == false) {
-            return null;
-        }
-
-        return $users;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getUserByEmail(string $email)
-    {
+    public function getUserByEmail(string $email): ?User {
         $stmt = $this->database->connect()->prepare('
-            SELECT * FROM users WHERE email = :email
+            SELECT u.id, u.firstname, u.lastname, u.email, u.password, r.name as role_name
+            FROM users u
+            LEFT JOIN roles r ON u.role_id = r.id
+            WHERE u.email = :email
         ');
-        
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-        
         $stmt->execute();
-        
+
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user == false) {
             return null;
         }
-        
-        return $user;
+
+        return new User(
+            $user['email'],
+            $user['password'],
+            $user['firstname'],
+            $user['lastname'],
+            $user['id'],
+            $user['role_name']
+        );
     }
 
     public function createUser(string $email, string $hashedPassword, string $firstname, string $lastname) 
@@ -52,9 +55,17 @@ class UserRepository extends Repository
         try {
             $pdo->beginTransaction();
 
+            $roleStmt = $pdo->prepare("SELECT id FROM roles WHERE name = 'standard'");
+            $roleStmt->execute();
+            $roleId = $roleStmt->fetchColumn();
+
+            if (!$roleId) {
+                throw new Exception("Default 'standard' role not found in database.");
+            }
+
             $stmt = $pdo->prepare('
-                INSERT INTO users (email, password, firstname, lastname) 
-                VALUES (:email, :password, :firstname, :lastname)
+                INSERT INTO users (email, password, firstname, lastname, role_id) 
+                VALUES (:email, :password, :firstname, :lastname, :role_id)
                 RETURNING id
             ');
 
@@ -62,6 +73,7 @@ class UserRepository extends Repository
             $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
             $stmt->bindParam(':firstname', $firstname, PDO::PARAM_STR);
             $stmt->bindParam(':lastname', $lastname, PDO::PARAM_STR);
+            $stmt->bindParam(':role_id', $roleId, PDO::PARAM_INT);
 
             $stmt->execute();
             
@@ -101,7 +113,10 @@ class UserRepository extends Repository
 
     public function getUserById(int $id): ?array {
         $stmt = $this->database->connect()->prepare('
-            SELECT * FROM users WHERE id = :id
+            SELECT u.*, r.name as role_name 
+            FROM users u
+            LEFT JOIN roles r ON u.role_id = r.id 
+            WHERE u.id = :id
         ');
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -154,6 +169,22 @@ class UserRepository extends Repository
         } catch (Exception $e) {
             $pdo->rollBack();
             throw $e;
+        }
+    }
+
+    public function updateUserRole(int $userId, string $newRoleName): void {
+        $stmt = $this->database->connect()->prepare('SELECT id FROM roles WHERE name = :name');
+        $stmt->bindParam(':name', $newRoleName, PDO::PARAM_STR);
+        $stmt->execute();
+        $roleId = $stmt->fetchColumn();
+
+        if ($roleId) {
+            $updateStmt = $this->database->connect()->prepare('
+                UPDATE users SET role_id = :role_id WHERE id = :id
+            ');
+            $updateStmt->bindParam(':role_id', $roleId, PDO::PARAM_INT);
+            $updateStmt->bindParam(':id', $userId, PDO::PARAM_INT);
+            $updateStmt->execute();
         }
     }
 }

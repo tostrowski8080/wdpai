@@ -39,17 +39,18 @@ class SecurityController extends AppController {
 
         $user = $this->userRepository->getUserByEmail($email);
 
-        if (!$user || !password_verify($password, $user['password'])) {
+        if (!$user || !password_verify($password, $user->getPassword())) {
             return $this->render('login', ['messages' => 'Invalid email or password']);
         }
 
         session_regenerate_id(true);
         
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_email'] = $user['email'];
-        $_SESSION['user_name'] = $user['firstname'];
+        $_SESSION['user_id'] = $user->getId();
+        $_SESSION['user_email'] = $user->getEmail();
+        $_SESSION['user_name'] = $user->getName();
+        $_SESSION['role'] = $user->getRole();
 
-        $this->activityRepository->checkAndCompleteExpiredActivities($user['id']);
+        $this->activityRepository->checkAndCompleteExpiredActivities($user->getId());
         
         header("Location: /dashboard");
         exit();

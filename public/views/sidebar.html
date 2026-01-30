@@ -20,7 +20,7 @@
             <a href="/add-activity" class="<?= $currentPage === 'add-activity' ? 'active' : '' ?>">
                 <span class="material-icons-round">add_circle</span>
                 <span class="link-text">Activity</span> 
-                </a>
+            </a>
         </li>
 
         <li class="nav-item">
@@ -36,6 +36,15 @@
                 <span class="link-text">Profile</span>
             </a>
         </li>
+
+        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+            <li class="nav-item">
+                <a href="/admin" class="<?= $currentPage === 'admin' ? 'active' : '' ?>">
+                    <span class="material-icons-round">admin_panel_settings</span>
+                    <span class="link-text">Admin</span>
+                </a>
+            </li>
+        <?php endif; ?>
     </ul>
 
     <a href="/logout" class="logout-btn">
