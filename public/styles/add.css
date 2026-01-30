@@ -214,8 +214,6 @@ input:checked + .slider:before {
     border-color: #d1d5db;
 }
 
-/* --- Custom Dropdown Styles --- */
-
 .custom-select-container {
     position: relative;
     user-select: none;
@@ -223,7 +221,7 @@ input:checked + .slider:before {
 }
 
 .custom-select-trigger {
-    background-color: #f3f4f6; /* Match input bg */
+    background-color: #f3f4f6;
     border: 1px solid transparent;
     border-radius: 8px;
     padding: 0.75rem 1rem;
@@ -234,7 +232,7 @@ input:checked + .slider:before {
     align-items: center;
     cursor: pointer;
     transition: all 0.2s;
-    min-height: 46px; /* Match height of other inputs */
+    min-height: 46px;
 }
 
 .custom-select-trigger:hover {
@@ -249,7 +247,7 @@ input:checked + .slider:before {
 
 .custom-options {
     position: absolute;
-    top: 105%; /* Just below the trigger */
+    top: 105%;
     left: 0;
     right: 0;
     background: white;
@@ -257,7 +255,7 @@ input:checked + .slider:before {
     border-radius: 8px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     z-index: 100;
-    display: none; /* Hidden by default */
+    display: none;
     max-height: 200px;
     overflow-y: auto;
 }
@@ -280,7 +278,6 @@ input:checked + .slider:before {
     background-color: #eff6ff;
 }
 
-/* Option Content Styling */
 .option-content {
     display: flex;
     align-items: center;
@@ -288,7 +285,6 @@ input:checked + .slider:before {
     font-weight: 500;
 }
 
-/* The Dot */
 .dot {
     width: 10px;
     height: 10px;
@@ -297,13 +293,11 @@ input:checked + .slider:before {
     flex-shrink: 0;
 }
 
-/* The Icon/Emoji Char */
 .icon-char {
     font-size: 1.1rem;
     line-height: 1;
 }
 
-/* Arrow rotation */
 .arrow {
     font-size: 1.2rem;
     color: #6b7280;
