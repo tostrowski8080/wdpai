@@ -1,55 +1,59 @@
-﻿# Activity Helper
-Aplikacja webowa służąca do organizacji czasu i zarządzania codziennymi aktywnościami. Projekt został zrealizowany w oparciu o wzorzec projektowy **MVC (Model-View-Controller)** przy użyciu czystego języka PHP oraz bazy danych PostgreSQL.
+# Activity Helper
 
-## Technologie
+A web application designed for time organization and daily activity management. The project was built from scratch using the **MVC (Model-View-Controller)** design pattern, plain PHP, and a PostgreSQL database.
 
-* **Backend:** PHP
-* **Baza danych:** PostgreSQL
-* **Frontend:** HTML, CSS3, JavaScript
-* **Komunikacja:** Fetch API (AJAX)
-* **Architektura:** Wzorzec MVC, własny Routing
-* **Konteneryzacja:** Docker
+## Technologies
 
-## Funkcjonalności
+  * **Backend:** PHP
+  * **Database:** PostgreSQL
+  * **Frontend:** HTML, CSS3, JavaScript
+  * **Communication:** Fetch API (AJAX)
+  * **Architecture:** MVC Pattern, Custom Routing
+  * **Containerization:** Docker
 
-1.  **System Użytkowników:**
-    * Rejestracja i logowanie (weryfikacja danych, hashowanie haseł).
-    * Obsługa sesji użytkownika.
-    * Bezpieczne wylogowywanie.
+## Features
 
-2.  **Role i Uprawnienia:**
-    * Podział na role: **Standard User** oraz **Admin**.
-    * **Panel Administratora:** Możliwość podglądu listy użytkowników i zmiany ich ról (zrealizowane asynchronicznie przez JavaScript/Fetch API).
+1.  **User System:**
 
-3.  **Zarządzanie Aktywnościami (CRUD):**
-    * Dodawanie nowych zadań/aktywności.
-    * Przypisywanie kategorii do zadań.
-    * Widok kalendarza i dashboardu.
+      * Registration and login (input validation, password hashing).
+      * User session management.
+      * Secure logout functionality.
 
-    ## Struktura Projektu
+2.  **Roles and Permissions:**
+
+      * Role-based access control: **Standard User** and **Admin**.
+      * **Admin Panel:** View the system's user list and toggle their roles (implemented asynchronously using vanilla JavaScript and the Fetch API).
+
+3.  **Activity Management (CRUD):**
+
+      * Create new tasks and activities.
+      * Assign specific categories to tasks.
+      * Visualize tasks through a dedicated calendar and dashboard view.
+
+## Project Structure
 
 ```text
 /docker
-  /db           # Konfiguracja i skrypty inicjalizacyjne bazy (init.sql)
-  /nginx        # Konfiguracja serwera HTTP (Nginx)
-  /php          # Plik Dockerfile dla środowiska PHP
+  /db           # Database configuration and initialization scripts (init.sql)
+  /nginx        # HTTP server configuration (Nginx)
+  /php          # Dockerfile for the PHP environment
 /public
-  /scripts      # Logika klienta JavaScript
-  /styles       # Arkusze stylów CSS
-  /views        # Szablony widoków aplikacji
+  /scripts      # Client-side JavaScript logic
+  /styles       # CSS stylesheets
+  /views        # Application view templates
 /src
-  /attribute    # Atrybuty niestandardowe
-  /controllers  # Logika biznesowa
-  /middleware   # Weryfikacja żądań i uprawnień
-  /model        # Modele obiektowe
-  /repository   # Warstwa dostępu do danych
-config.php      # Plik konfiguracyjny połączenia z bazą danych
-Database.php    # Klasa obsługująca połączenie z PostgreSQL
-docker-compose.yaml # Definicja serwisów i kontenerów
-index.php       # Główny punkt wejścia aplikacji
-Routing.php     # System mapowania URL na kontrolery
+  /attribute    # Custom PHP attributes
+  /controllers  # Business logic and application controllers
+  /middleware   # Request interception and permission verification
+  /model        # Domain models and entities
+  /repository   # Data access layer for database interactions
+config.php      # Database connection configuration file
+Database.php    # Core class handling the PostgreSQL connection
+docker-compose.yaml # Docker services and container definitions
+index.php       # Main application entry point
+Routing.php     # Custom URL-to-controller mapping system
 ```
 
-## Diagram ERD Bazy Danych
+## Database ERD Diagram
 
 ![Diagram ERD bazy danych](ERD.png)
